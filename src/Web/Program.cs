@@ -9,11 +9,18 @@ serv.AddSingleton<ContactsRepo>(_ => new(JsonSerializer.Deserialize<Contact[]>(F
 
 var app = bldr.Build();
 
+app.UseStaticFiles();
+
 app.MapGet("/",
 () =>
-    //Results.Extensions.RazorSlice("/Slices/Hello.cshtml", DateTime.Now)
+    //Results.Extensions.RazorSlice("/slices/test")
     Results.Redirect("/contacts")
 );
+
+//app.MapPost("/clicked",
+//() =>
+//    "clicked"
+//);
 
 app.MapGet("/contacts",
 (string? q, ContactsRepo db) => {
@@ -21,7 +28,7 @@ app.MapGet("/contacts",
         false => db.Search(q),
         true => db.All(),
     };
-    return Results.Extensions.RazorSlice("/Slices/Index", contacts);
+    return Results.Extensions.RazorSlice("/slices/index", new ContactsRequest(contacts, q));
 });
 
 app.Run();
