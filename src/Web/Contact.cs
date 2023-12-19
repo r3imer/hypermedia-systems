@@ -1,6 +1,10 @@
-﻿using System.Text.Json;
+﻿using Microsoft.AspNetCore.Html;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 
 namespace Reim.Htmx.Web;
+
+public record HtmlContent(string Html);
 
 public class Contact {
     public required int id { get; set; }
@@ -29,17 +33,3 @@ public class ContactsRepo(Contact[] list) {
             (x.email?.Contains(text) ?? false)
         ).ToArray();
 }
-
-
-//public class DB {
-//    public List<Contact> Contacts = new();
-
-//    public void Load() {
-//        var file = File.ReadAllText("contacts.json");
-//        Contacts = JsonSerializer.Deserialize<Contact[]>(file)?.ToList() ?? new();
-//    }
-
-//    public void Save() {
-//        File.WriteAllText("contacts.json", JsonSerializer.Serialize(Contacts));
-//    }
-//}
