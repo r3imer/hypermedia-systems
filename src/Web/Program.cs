@@ -1,4 +1,3 @@
-using RazorSlices;
 using Reim.Htmx.Web;
 using System.Text.Json;
 
@@ -28,24 +27,10 @@ async (HttpContext ctxt, string? q, ContactsRepo db) => {
         true => db.All(),
     };
 
-    var slice = RazorSlice.Create(
-        "slices/contacts",
-        new ContactsRequest(contacts, q)
-    );
+    var tmp = new ContactsRequest(contacts, q);
+    var html = tmp.ToHtml().ToPage();
 
-    var body = await slice.RenderAsync();
-
-    // TODO: BROKEN
-    var html = RazorSlice.Create(
-        "/slices/page",
-        body
-    );
-
-    ctxt.Response.StatusCode = StatusCodes.Status200OK;
-    ctxt.Response.ContentType = "text/html; charset=utf-8";
-    
-    return html.RenderAsync(ctxt.Response.Body);
-
+    return html.AsHtml();
 });
 
 app.Run();
