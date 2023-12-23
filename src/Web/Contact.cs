@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Html;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-
-namespace Reim.Htmx.Web;
+﻿namespace Reim.Htmx.Web;
 
 public record HtmlContent(string Html);
 
