@@ -1,3 +1,6 @@
+:root {
+    --line-length: 45rem;
+}
 .flash {
     display: block;
     background-color: #2fdc2f !important;

@@ -1,14 +1,21 @@
-﻿namespace Reim.Htmx.Web;
+namespace Reim.Htmx.Web;
 
 public record HtmlContent(string Html);
 
+public record ContactDto(
+    string? first_name,
+    string? last_name,
+    string? phone,
+    string? email
+);
+
 public class Contact {
-    public required int id { get; set; }
-    public required string? first { get; set; }
-    public required string? last { get; set; }
-    public required string? phone { get; set; }
-    public required string? email { get; set; }
-    public string[] errors { get; set; } = Array.Empty<string>();
+    public int id { get; set; }
+    public string? first { get; set; }
+    public string? last { get; set; }
+    public string? phone { get; set; }
+    public string? email { get; set; }
+    public Dictionary<string, string> errors { get; set; } = [];
 }
 
 public record ContactsRequest(
@@ -19,6 +26,7 @@ public record ContactsRequest(
 public class ContactsRepo(Contact[] list) {
 
     private List<Contact> db = [.. list];
+    private int _counter = list.Length;
 
     public Contact[] All() => db.ToArray();
     public Contact[] Search(string text) => db
@@ -28,4 +36,11 @@ public class ContactsRepo(Contact[] list) {
             (x.phone?.Contains(text) ?? false) ||
             (x.email?.Contains(text) ?? false)
         ).ToArray();
+
+    public bool Add(Contact contact) {
+        contact.id = _counter;
+        _counter++;
+        db.Add(contact);
+        return true;
+    }
 }
