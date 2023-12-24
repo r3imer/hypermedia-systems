@@ -28,7 +28,7 @@ async (HttpContext ctxt, string? q, ContactsRepo db) => {
     };
 
     var tmp = new ContactsRequest(contacts, q);
-    var html = tmp.ToHtml().ToPage();
+    var html = tmp.ToHtml().ToLayout();
 
     return html.AsHtml();
 });
