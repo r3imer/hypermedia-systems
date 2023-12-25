@@ -33,16 +33,6 @@ app.UseStaticFiles();
 app.UseHttpLogging();
 app.UseAntiforgery();
 
-app.MapGet("/",
-() =>
-    Results.Redirect("/contacts")
-);
-
-app.MapGet("/contacts",
-(string? q, ContactsRepo db) => {
-    var contacts = (q is null) switch {
-        false => db.Search(q),
-        true => db.All(),
 
 app.MapGet("/",
 () =>
