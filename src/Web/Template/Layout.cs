@@ -32,7 +32,9 @@ public static partial class Template {
                     <sub-title>A Demo Contacts Application</sub-title>
                 </h1>
             </header>
+
             {Flashes.Get().Select(ToFlash).ToHtml()}
+
             {x}
         </main>
         </body>

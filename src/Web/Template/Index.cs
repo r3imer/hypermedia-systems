@@ -8,6 +8,7 @@ public static partial class Template {
           <input id="search" type="search" name="q" value="{x.q}"/>
           <input type="submit" value="Search" />
         </form>
+
         <table>
           <thead>
             <tr>
@@ -23,6 +24,7 @@ public static partial class Template {
             {x.contacts.Select(ToRow).ToHtml()}
           </tbody>
         </table>
+
         <p>
             <a href="/contacts/new">Add Contact</a>
         </p>
