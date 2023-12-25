@@ -12,7 +12,7 @@ public static class Flashes {
 
 public static partial class Template {
 
-    public static string ToLayout(this string x) => $$"""
+    public static string HtmlLayout(this string x) => $$"""
         <!doctype html>
         <html lang="en">
         <head>

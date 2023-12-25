@@ -58,14 +58,14 @@ app.MapGet("/contacts",
     };
 
     var tmp = new ContactsRequest(contacts, q);
-    var html = tmp.ToIndex().ToLayout();
+    var html = tmp.HtmlIndex().HtmlLayout();
 
     return html.AsHtml();
 });
 
 app.MapGet("/contacts/new",
 () => {
-    return new Contact().ToNew().ToLayout().AsHtml();
+    return new Contact().HtmlNew().HtmlLayout().AsHtml();
 });
 
 app.MapPost("/contacts/new",
@@ -75,7 +75,7 @@ app.MapPost("/contacts/new",
         Flashes.Add("Created New Contact!");
         return Results.Redirect("/contacts");
     } else {
-        return c.ToNew().ToLayout().AsHtml();
+        return c.HtmlNew().HtmlLayout().AsHtml();
     }
 })
 .DisableAntiforgery();
@@ -87,7 +87,7 @@ app.MapGet("/contacts/{id}",
         Flashes.Add($"Contact '{id}' not found");
         return Results.Redirect("/contacts");
     }
-    return contact.ToShow().ToLayout().AsHtml();
+    return contact.HtmlShow().HtmlLayout().AsHtml();
 });
 
 

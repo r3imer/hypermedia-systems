@@ -2,7 +2,7 @@ namespace Reim.Htmx.Web.Template;
 
 public static partial class Template {
 
-    public static string ToNew(this Contact x) => $$"""
+    public static string HtmlNew(this Contact x) => $$"""
         <form action="/contacts/new" method="post">
             <fieldset>
                 <legend>Contact Values</legend>
@@ -34,4 +34,32 @@ public static partial class Template {
             <a href="/contacts">Back</a>
         </p>
         """;
+
+    public static string HtmlShow(this Contact x) => $$"""
+        <h1>{{x.first}} {{x.last}}</h1>
+
+        <div>
+          <div>Phone: {{x.phone}}</div>
+          <div>Email: {{x.email}}</div>
+        </div>
+
+        <p>
+          <a href="/contacts/{{x.id}}/edit">Edit</a>
+          <a href="/contacts">Back</a>
+        </p>
+        """;
+
+    public static string HtmlRow(this Contact x) => $$"""
+        <tr>
+          <td>{{x.first}}</td>
+          <td>{{x.last}}</td>
+          <td>{{x.phone}}</td>
+          <td>{{x.email}}</td>
+          <td>
+              <a href="/contacts/{{x.id}}/edit">Edit</a>
+              <a href="/contacts/{{x.id}}">View</a>
+          </td>
+        </tr>
+        """;
+
 }
