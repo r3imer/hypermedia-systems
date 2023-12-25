@@ -28,11 +28,22 @@ serv.AddHttpLogging(opts => {
 
 var app = bldr.Build();
 var log = app.Services.GetService<ILogger<Program>>();
-app.UseMiddleware<CatchExceptions>();
+
+//app.UseMiddleware<CatchExceptions>();
 app.UseStaticFiles();
 app.UseHttpLogging();
 app.UseAntiforgery();
 
+app.Use((ctxt,next) => {
+    try {
+        return next(ctxt);
+    } catch (Exception ex) {
+        log.LogError(ex, "Something went wrong");
+        ctxt.Response.StatusCode = 500;
+        ctxt.Response.WriteAsync("Something went wrong");
+        return Task.CompletedTask;
+    }
+});
 
 app.MapGet("/",
 () =>
@@ -68,6 +79,16 @@ app.MapPost("/contacts/new",
     }
 })
 .DisableAntiforgery();
+
+app.MapGet("/contacts/{id}",
+(int id, ContactsRepo db) => {
+    var contact = db.Get(id);
+    if (contact is null) {
+        Flashes.Add($"Contact '{id}' not found");
+        return Results.Redirect("/contacts");
+    }
+    return contact.ToShow().ToLayout().AsHtml();
+});
 
 
 app.Run();
