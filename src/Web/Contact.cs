@@ -37,6 +37,8 @@ public class ContactsRepo(Contact[] list) {
             (x.email?.Contains(text) ?? false)
         ).ToArray();
 
+    public Contact? Get(int id) => db.Where(x => x.id == id).FirstOrDefault();
+
     public bool Add(Contact contact) {
         contact.id = _counter;
         _counter++;
