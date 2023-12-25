@@ -27,7 +27,7 @@ serv.AddHttpLogging(opts => {
 });
 
 var app = bldr.Build();
-var log = app.Services.GetService<ILogger<Program>>();
+var log = app.Services.GetService<ILogger<Program>>()!;
 
 //app.UseMiddleware<CatchExceptions>();
 app.UseStaticFiles();
