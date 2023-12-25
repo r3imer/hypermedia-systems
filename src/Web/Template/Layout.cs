@@ -12,7 +12,7 @@ public static class Flashes {
 
 public static partial class Template {
 
-    public static string ToLayout(this string x) => $"""
+    public static string ToLayout(this string x) => $$"""
         <!doctype html>
         <html lang="en">
         <head>
@@ -33,16 +33,16 @@ public static partial class Template {
                 </h1>
             </header>
 
-            {Flashes.Get().Select(ToFlash).ToHtml()}
+            {{Flashes.Get().Select(ToFlash).ToHtml()}}
 
-            {x}
+            {{x}}
         </main>
         </body>
         </html>
         """;
 
-    private static string ToFlash(string message) => $"""
-        <div class="flash">{message}</div>
+    private static string ToFlash(string message) => $$"""
+        <div class="flash">{{message}}</div>
         """;
 
 }
