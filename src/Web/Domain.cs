@@ -8,4 +8,12 @@ public static class Domain {
         last = x.last_name,
         phone = x.phone,
     };
+
+    public static bool Update(this Contact old, ContactDto dto) {
+        old.email = dto.email;
+        old.phone = dto.phone;
+        old.first = dto.first_name;
+        old.last = dto.last_name;
+        return true;
+    }
 }

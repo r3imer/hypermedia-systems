@@ -90,5 +90,40 @@ app.MapGet("/contacts/{id}",
     return contact.HtmlShow().HtmlLayout().AsHtml();
 });
 
+app.MapGet("/contacts/{id}/edit",
+(int id, ContactsRepo db) => {
+    var contact = db.Get(id);
+    if (contact is null) {
+        Flashes.Add($"Contact '{id}' not found");
+        return Results.Redirect("/contacts");
+    }
+    return contact.HtmlEdit().HtmlLayout().AsHtml();
+});
+
+app.MapPost("/contacts/{id}/edit",
+(int id, [FromForm] ContactDto contact, ContactsRepo db) => {
+    var c = db.Get(id); 
+    if (c is null) {
+        Flashes.Add($"Contact '{id}' not found");
+        return Results.Redirect("/contacts");
+    }
+    if (c.Update(contact)) {
+        Flashes.Add("Updated Contact!");
+        return Results.Redirect($"/contacts/{id}");
+    }
+    return c.HtmlEdit().HtmlLayout().AsHtml();
+})
+.DisableAntiforgery();
+
+app.MapPost("/contacts/{id}/delete",
+(int id, ContactsRepo db) => {
+    if (db.Delete(id)) {
+        Flashes.Add("Delete Contact!");
+    } else {
+        Flashes.Add($"Contact '{id}' not found");
+    }
+    return Results.Redirect("/contacts");
+})
+.DisableAntiforgery();
 
 app.Run();

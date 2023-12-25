@@ -41,6 +41,15 @@ public class ContactsRepo(Contact[] list) {
 
     public Contact? Get(int id) => db.Where(x => x.id == id).FirstOrDefault();
 
+    public bool Delete(int id) {
+        var index = db.FindIndex(x => x.id == id);
+        if (index == -1) {
+            return false;
+        }
+        db.RemoveAt(index);
+        return true;
+    }
+
     public bool Add(Contact contact) {
         contact.id = _counter;
         _counter++;
