@@ -16,24 +16,33 @@ serv.AddSingleton<ContactsRepo>(_
         File.ReadAllText("contacts2.json")) ?? []
     )
 );
-serv.AddSingleton<CatchExceptions>();
 
 serv.AddHttpLogging(opts => {
     opts.LoggingFields =
-        //HttpLoggingFields.Duration |
-        //HttpLoggingFields.RequestPropertiesAndHeaders |
-        //HttpLoggingFields.ResponsePropertiesAndHeaders
-        HttpLoggingFields.All
+        HttpLoggingFields.Duration |
+        HttpLoggingFields.ResponsePropertiesAndHeaders |
+        HttpLoggingFields.Request
+        //HttpLoggingFields.All
         ;
 });
 
 var app = bldr.Build();
 var log = app.Services.GetService<ILogger<Program>>();
-
 app.UseMiddleware<CatchExceptions>();
 app.UseStaticFiles();
 app.UseHttpLogging();
 app.UseAntiforgery();
+
+app.MapGet("/",
+() =>
+    Results.Redirect("/contacts")
+);
+
+app.MapGet("/contacts",
+(string? q, ContactsRepo db) => {
+    var contacts = (q is null) switch {
+        false => db.Search(q),
+        true => db.All(),
 
 app.MapGet("/",
 () =>
