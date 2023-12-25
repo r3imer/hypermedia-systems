@@ -29,13 +29,15 @@ public class ContactsRepo(Contact[] list) {
     private int _counter = list.Length;
 
     public Contact[] All() => db.ToArray();
-    public Contact[] Search(string text) => db
-        .Where(x =>
-            (x.first?.Contains(text) ?? false) ||
-            (x.last?.Contains(text) ?? false) ||
-            (x.phone?.Contains(text) ?? false) ||
-            (x.email?.Contains(text) ?? false)
+    public Contact[] Search(string text) {
+        var compare = StringComparison.InvariantCultureIgnoreCase;
+        return db.Where(x =>
+            (x.first?.Contains(text, compare) ?? false) ||
+            (x.last?.Contains(text, compare) ?? false) ||
+            (x.phone?.Contains(text, compare) ?? false) ||
+            (x.email?.Contains(text, compare) ?? false)
         ).ToArray();
+    }
 
     public Contact? Get(int id) => db.Where(x => x.id == id).FirstOrDefault();
 

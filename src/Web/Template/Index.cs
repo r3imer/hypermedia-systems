@@ -13,7 +13,6 @@ public static partial class Template {
           <thead>
             <tr>
               <th>First</th>
-              <th>First</th>
               <th>Last</th>
               <th>Phone</th>
               <th>Email</th>
