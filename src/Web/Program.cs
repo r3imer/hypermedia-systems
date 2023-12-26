@@ -3,7 +3,6 @@ using Reim.Htmx.Web.Template;
 using System.Text.Json;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
-using Reim.Web;
 
 var bldr = WebApplication.CreateBuilder(args);
 var serv = bldr.Services;
@@ -34,7 +33,7 @@ app.UseStaticFiles();
 app.UseHttpLogging();
 app.UseAntiforgery();
 
-app.Use((ctxt,next) => {
+app.Use((ctxt, next) => {
     try {
         return next(ctxt);
     } catch (Exception ex) {
@@ -65,53 +64,71 @@ app.MapGet("/contacts",
 
 app.MapGet("/contacts/new",
 () => {
-    return new Contact().HtmlNew().HtmlLayout().AsHtml();
+    return new ContactForm().HtmlNew(null).HtmlLayout().AsHtml();
 });
 
 app.MapPost("/contacts/new",
-([FromForm] ContactDto contact, ContactsRepo db) => {
-    var c = contact.To();
-    if(db.Add(c)) {
-        Flashes.Add("Created New Contact!");
-        return Results.Redirect("/contacts");
-    } else {
-        return c.HtmlNew().HtmlLayout().AsHtml();
-    }
+async ([FromForm] ContactForm contact, ContactsRepo db) => {
+    var c = await contact.Create(db, await db.NextId());
+    return await c.Match(
+        async ok => {
+            if (await db.Save(ok)) {
+                Flashes.Add("Created New Contact!");
+                return Results.Redirect("/contacts");
+            } else {
+                Flashes.Add("Problem by Saving to Database!");
+                return ok.ToForm().HtmlNew(null).HtmlLayout().AsHtml();
+            }
+        },
+        async err => {
+            return contact.HtmlNew(err).HtmlLayout().AsHtml();
+        }
+    );
 })
 .DisableAntiforgery();
 
 app.MapGet("/contacts/{id}",
-(int id, ContactsRepo db) => {
-    var contact = db.Get(id);
+async (int id, ContactsRepo db) => {
+    var contact = await db.Load(id);
     if (contact is null) {
         Flashes.Add($"Contact '{id}' not found");
         return Results.Redirect("/contacts");
     }
-    return contact.HtmlShow().HtmlLayout().AsHtml();
+    return contact.ToForm().HtmlShow(id).HtmlLayout().AsHtml();
 });
 
 app.MapGet("/contacts/{id}/edit",
-(int id, ContactsRepo db) => {
-    var contact = db.Get(id);
+async (int id, ContactsRepo db) => {
+    var contact = await db.Load(id);
     if (contact is null) {
         Flashes.Add($"Contact '{id}' not found");
         return Results.Redirect("/contacts");
     }
-    return contact.HtmlEdit().HtmlLayout().AsHtml();
+    return contact.ToForm().HtmlEdit(id, null).HtmlLayout().AsHtml();
 });
 
 app.MapPost("/contacts/{id}/edit",
-(int id, [FromForm] ContactDto contact, ContactsRepo db) => {
-    var c = db.Get(id); 
-    if (c is null) {
+async (int id, [FromForm] ContactForm contact, ContactsRepo db) => {
+    var old = await db.Load(id);
+    if (old is null) {
         Flashes.Add($"Contact '{id}' not found");
         return Results.Redirect("/contacts");
     }
-    if (c.Update(contact)) {
-        Flashes.Add("Updated Contact!");
-        return Results.Redirect($"/contacts/{id}");
-    }
-    return c.HtmlEdit().HtmlLayout().AsHtml();
+    var c = await contact.Create(db, id);
+    return await c.Match(
+        async ok => {
+            if (await db.Save(ok)) {
+                Flashes.Add("Updated Contact!");
+                return Results.Redirect($"/contacts/{id}");
+            } else {
+                Flashes.Add("Problem by Saving to Database!");
+                return ok.ToForm().HtmlEdit(id,null).HtmlLayout().AsHtml();
+            }
+        },
+        async err => {
+            return contact.HtmlEdit(id, err).HtmlLayout().AsHtml();
+        }
+    );
 })
 .DisableAntiforgery();
 

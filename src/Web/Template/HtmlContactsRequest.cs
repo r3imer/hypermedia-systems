@@ -20,7 +20,7 @@ public static partial class Template {
             </tr>
           </thead>
           <tbody>
-            {{x.contacts.Select(HtmlRow).ToHtml()}}
+            {{x.contacts.Select(x => x.ToForm().HtmlRow(x.id)).ToHtml()}}
           </tbody>
         </table>
 
