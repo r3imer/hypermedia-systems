@@ -1,4 +1,3 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -6,6 +5,8 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{517A5E7A-E961-4AF7-BBCE-033E3AA30A30}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reim.Htmx.Web", "src\Web\Reim.Htmx.Web.csproj", "{EF9B2F03-2E30-49B4-9119-A39C2D6B8E94}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reim.Std", "src\Reim.Std\Reim.Std.csproj", "{2557B6E7-73B3-46F6-B7B3-EF5713DCF67F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,11 +18,18 @@ Global
 		{EF9B2F03-2E30-49B4-9119-A39C2D6B8E94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF9B2F03-2E30-49B4-9119-A39C2D6B8E94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF9B2F03-2E30-49B4-9119-A39C2D6B8E94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2557B6E7-73B3-46F6-B7B3-EF5713DCF67F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2557B6E7-73B3-46F6-B7B3-EF5713DCF67F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2557B6E7-73B3-46F6-B7B3-EF5713DCF67F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2557B6E7-73B3-46F6-B7B3-EF5713DCF67F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EF9B2F03-2E30-49B4-9119-A39C2D6B8E94} = {517A5E7A-E961-4AF7-BBCE-033E3AA30A30}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {79859062-8B50-4223-8992-5E41013EBE9E}
 	EndGlobalSection
 EndGlobal

@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Reim.Std\Reim.Std.csproj" />
+  </ItemGroup>
+
 </Project>
