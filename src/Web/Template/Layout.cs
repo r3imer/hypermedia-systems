@@ -37,6 +37,7 @@ public static partial class Template {
 
             {{x}}
         </main>
+        <script src="/_framework/aspnetcore-browser-refresh.js"></script>
         </body>
         </html>
         """;

@@ -1,10 +1,16 @@
 using Reim.Htmx.Web;
-using Reim.Htmx.Web.Template;
 using System.Text.Json;
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.AspNetCore.Mvc;
+using NLog.Web;
+
+ILoggerFactory loggerFactory = LoggerFactory.Create(builder => builder.AddNLog("nlog.config"));
+ILogger<Program> logger = loggerFactory.CreateLogger<Program>();
+logger.LogInformation("init main");
 
 var bldr = WebApplication.CreateBuilder(args);
+bldr.Logging.ClearProviders();
+bldr.Host.UseNLog();
+
 var serv = bldr.Services;
 
 serv.AddAntiforgery();
@@ -17,11 +23,12 @@ serv.AddSingleton<ContactsRepo>(_
 );
 
 serv.AddHttpLogging(opts => {
+    opts.CombineLogs = true;
     opts.LoggingFields =
-        HttpLoggingFields.Duration |
-        HttpLoggingFields.ResponsePropertiesAndHeaders |
-        HttpLoggingFields.Request
-        //HttpLoggingFields.All
+        HttpLoggingFields.Duration 
+        | HttpLoggingFields.ResponseStatusCode
+        | HttpLoggingFields.ResponseHeaders
+        //| HttpLoggingFields.RequestHeaders
         ;
 });
 
@@ -34,113 +41,23 @@ app.UseHttpLogging();
 app.UseAntiforgery();
 
 app.Use((ctxt, next) => {
-    try {
-        return next(ctxt);
-    } catch (Exception ex) {
-        log.LogError(ex, "Something went wrong");
-        ctxt.Response.StatusCode = 500;
-        ctxt.Response.WriteAsync("Something went wrong");
-        return Task.CompletedTask;
-    }
+    //log.
+    var r = next(ctxt);
+    return r;
 });
 
-app.MapGet("/",
-() =>
-    Results.Redirect("/contacts")
-);
+app.MapGet("/", () => Results.Redirect("/contacts"));
 
-app.MapGet("/contacts",
-(string? q, ContactsRepo db) => {
-    var contacts = (q is null) switch {
-        false => db.Search(q),
-        true => db.All(),
-    };
+app.MapGroup("/contacts")
+    .DisableAntiforgery()
+    .MapWebEndpoints()
+    ;
 
-    var tmp = new ContactsRequest(contacts, q);
-    var html = tmp.HtmlIndex().HtmlLayout();
-
-    return html.AsHtml();
-});
-
-app.MapGet("/contacts/new",
-() => {
-    return new ContactForm().HtmlNew(null).HtmlLayout().AsHtml();
-});
-
-app.MapPost("/contacts/new",
-async ([FromForm] ContactForm contact, ContactsRepo db) => {
-    var c = await contact.Create(db, await db.NextId());
-    return await c.Match(
-        async ok => {
-            if (await db.Save(ok)) {
-                Flashes.Add("Created New Contact!");
-                return Results.Redirect("/contacts");
-            } else {
-                Flashes.Add("Problem by Saving to Database!");
-                return ok.ToForm().HtmlNew(null).HtmlLayout().AsHtml();
-            }
-        },
-        async err => {
-            return contact.HtmlNew(err).HtmlLayout().AsHtml();
-        }
-    );
-})
-.DisableAntiforgery();
-
-app.MapGet("/contacts/{id}",
-async (int id, ContactsRepo db) => {
-    var contact = await db.Load(id);
-    if (contact is null) {
-        Flashes.Add($"Contact '{id}' not found");
-        return Results.Redirect("/contacts");
-    }
-    return contact.ToForm().HtmlShow(id).HtmlLayout().AsHtml();
-});
-
-app.MapGet("/contacts/{id}/edit",
-async (int id, ContactsRepo db) => {
-    var contact = await db.Load(id);
-    if (contact is null) {
-        Flashes.Add($"Contact '{id}' not found");
-        return Results.Redirect("/contacts");
-    }
-    return contact.ToForm().HtmlEdit(id, null).HtmlLayout().AsHtml();
-});
-
-app.MapPost("/contacts/{id}/edit",
-async (int id, [FromForm] ContactForm contact, ContactsRepo db) => {
-    var old = await db.Load(id);
-    if (old is null) {
-        Flashes.Add($"Contact '{id}' not found");
-        return Results.Redirect("/contacts");
-    }
-    var c = await contact.Create(db, id);
-    return await c.Match(
-        async ok => {
-            if (await db.Save(ok)) {
-                Flashes.Add("Updated Contact!");
-                return Results.Redirect($"/contacts/{id}");
-            } else {
-                Flashes.Add("Problem by Saving to Database!");
-                return ok.ToForm().HtmlEdit(id,null).HtmlLayout().AsHtml();
-            }
-        },
-        async err => {
-            return contact.HtmlEdit(id, err).HtmlLayout().AsHtml();
-        }
-    );
-})
-.DisableAntiforgery();
-
-app.MapPost("/contacts/{id}/delete",
-(int id, ContactsRepo db) => {
-    if (db.Delete(id)) {
-        Flashes.Add("Delete Contact!");
-    } else {
-        Flashes.Add($"Contact '{id}' not found");
-    }
-    return Results.Redirect("/contacts");
-})
-.DisableAntiforgery();
-
-app.Run();
+try {
+    app.Run();
+} catch (Exception ex) {
+    logger.LogError(ex, "Stopped program because of exception");
+    throw;
+} finally {
+    NLog.LogManager.Shutdown();
+}
