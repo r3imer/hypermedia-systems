@@ -10,7 +10,7 @@ public static partial class Template {
     //public static ContentHttpResult AsHtml(this string x) {
     //    return TypedResults.Content(x, "text/html; charset=utf-8");
     //}
-    public static IResult AsHtml(this string x) {
+    public static IResult AsHtml(this string? x) {
         return Results.Content(x, "text/html; charset=utf-8");
     }
 

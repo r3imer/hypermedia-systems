@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Reim.Htmx.Web.Template;
 using Reim.Http;
+using Reim.Std.Domain;
 
 namespace Reim.Htmx.Web;
 
@@ -25,70 +26,66 @@ public static class EndpointsWeb {
 
         x.MapGet("/new",
         () => {
-            return new ContactForm().HtmlNew(null).HtmlLayout().AsHtml();
+            return new ContactDto().HtmlNew(null).HtmlLayout().AsHtml();
         });
 
         x.MapPost("/new",
-        async ([FromForm] ContactForm contact, ContactsRepo db) => {
-            var c = await contact.Create(db, await db.NextId());
-            return await c.Match(
-                async ok => {
-                    if (await db.Save(ok)) {
-                        Flashes.Add("Created New Contact!");
-                        return Results.Redirect("/contacts");
-                    } else {
-                        Flashes.Add("Problem by Saving to Database!");
-                        return ok.ToForm().HtmlNew(null).HtmlLayout().AsHtml();
-                    }
+        ([FromForm] ContactForm contact, ContactsRepo db) => {
+            var c = db.Create(contact);
+            return c.Match(
+                ok => {
+                    Flashes.Add("Created New Contact!");
+                    return Results.Redirect("/contacts");
                 },
-                async err => {
-                    return contact.HtmlNew(err).HtmlLayout().AsHtml();
+                err => {
+                    return contact.ToDto(null).HtmlNew(err).HtmlLayout().AsHtml();
                 }
             );
         });
 
         x.MapGet("/{id}",
-        async (int id, ContactsRepo db) => {
-            var contact = await db.Load(id);
+        (int id, ContactsRepo db) => {
+            var contact = db.Load(id);
             if (contact is null) {
                 Flashes.Add($"Contact '{id}' not found");
                 return Results.Redirect("/contacts");
             }
-            return contact.ToForm().HtmlShow(id).HtmlLayout().AsHtml();
+            return contact.ToDto().HtmlShow().HtmlLayout().AsHtml();
         });
 
         x.MapGet("/{id}/edit",
-        async (int id, ContactsRepo db) => {
-            var contact = await db.Load(id);
+        (int id, ContactsRepo db) => {
+            var contact = db.Load(id);
             if (contact is null) {
                 Flashes.Add($"Contact '{id}' not found");
                 return Results.Redirect("/contacts");
             }
-            return contact.ToForm().HtmlEdit(id, null).HtmlLayout().AsHtml();
+            return contact.ToDto().HtmlEdit(null).HtmlLayout().AsHtml();
         });
 
         x.MapPost("/{id}/edit",
-        async (int id, [FromForm] ContactForm contact, ContactsRepo db) => {
-            var old = await db.Load(id);
+        (int id, [FromForm] ContactForm contact, ContactsRepo db) => {
+            var old = db.Load(id);
             if (old is null) {
                 Flashes.Add($"Contact '{id}' not found");
                 return Results.Redirect("/contacts");
             }
-            var c = await contact.Create(db, id);
-            return await c.Match(
-                async ok => {
-                    if (await db.Save(ok)) {
-                        Flashes.Add("Updated Contact!");
-                        return Results.Redirect($"/contacts/{id}");
-                    } else {
-                        Flashes.Add("Problem by Saving to Database!");
-                        return ok.ToForm().HtmlEdit(id, null).HtmlLayout().AsHtml();
-                    }
+            var c = db.Update(contact, id);
+            return c.Match(
+                ok => {
+                    Flashes.Add("Updated Contact!");
+                    return Results.Redirect($"/contacts/{id}");
                 },
-                async err => {
-                    return contact.HtmlEdit(id, err).HtmlLayout().AsHtml();
+                err => {
+                    return contact.ToDto(id).HtmlEdit(err).HtmlLayout().AsHtml();
                 }
             );
+        });
+
+        x.MapGet("/{id}/email",
+        (ContactsRepo db, int id, string? email = null) => {
+            var r = db.ValidateEmail(email, id);
+            return r.AsHtml();
         });
 
         x.MapDelete("/{id}",
@@ -98,7 +95,6 @@ public static class EndpointsWeb {
             } else {
                 Flashes.Add($"Contact '{id}' not found");
             }
-            //var r = TypedResults.StatusCode(303);
             ctxt.Response303("/contacts");
         });
 

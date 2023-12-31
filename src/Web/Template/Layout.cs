@@ -33,9 +33,9 @@ public static partial class Template {
                 </h1>
             </header>
 
-            {{Flashes.Get().Select(ToFlash).ToHtml()}}
+            {{ Flashes.Get().Select(ToFlash).ToHtml() }}
 
-            {{x}}
+            {{ x }}
         </main>
         <script src="/_framework/aspnetcore-browser-refresh.js"></script>
         </body>
@@ -43,7 +43,7 @@ public static partial class Template {
         """;
 
     private static string ToFlash(string message) => $$"""
-        <div class="flash">{{message}}</div>
+        <div class="flash">{{ message }}</div>
         """;
 
 }

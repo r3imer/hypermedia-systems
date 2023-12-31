@@ -14,41 +14,20 @@ public static class ContactExt {
 
 public record HtmlContent(string Html);
 
+public record ContactDto(
+    string? first_name = null,
+    string? last_name = null,
+    string? phone = null,
+    string? email = null,
+    int? id = null
+);
+
 public record ContactForm(
     string? first_name = null,
     string? last_name = null,
     string? phone = null,
     string? email = null
-) : IForm<Contact, int, Errors> {
-
-    public async Task<Result<Contact, Errors>> Create(IValidater<Contact> repo, int id) {
-        var errors = new Dictionary<string, string>();
-
-        if (string.IsNullOrEmpty(first_name)) {
-            errors["first_name"] = "First Name is Required!";
-        }
-        if (string.IsNullOrEmpty(last_name)) {
-            errors["last_name"] = "Last Name is Required!";
-        }
-        if (string.IsNullOrEmpty(email)) {
-            errors["email"] = "Email is Required!";
-        } else if (await repo.Single(x => x.email == email && x.id != id)) {
-            errors["email"] = "Email not Unique!";
-        }
-
-        if (errors.Count == 0) {
-            return new Contact(
-                id,
-                first_name!,
-                last_name!,
-                email!,
-                phone
-            );
-        } else {
-            return new Errors(errors);
-        }
-    }
-}
+);
 
 public record Contact(
     int id,
@@ -70,12 +49,14 @@ public record ContactsRequest(
     string? q
 );
 
-public class ContactsRepo(Contact[] list) : IRepo<Contact, int> {
+//public class ContactsRepo(Contact[] list) : IRepo<Contact, int> {
+public class ContactsRepo(Contact[] list) {
 
     private readonly List<Contact> _db = [.. list];
     private int _counter = list.Length;
 
     public Contact[] All() => _db.ToArray();
+
     public Contact[] Search(string text) {
         var compare = StringComparison.InvariantCultureIgnoreCase;
         return _db.Where(x =>
@@ -86,8 +67,8 @@ public class ContactsRepo(Contact[] list) : IRepo<Contact, int> {
         ).ToArray();
     }
 
-    public Task<Contact?> Load(int id)
-        => Task.FromResult(_db.Where(x => x.id == id).FirstOrDefault());
+    public Contact? Load(int id)
+        => _db.Where(x => x.id == id).FirstOrDefault();
 
     public bool Delete(int id) {
         var index = _db.FindIndex(x => x.id == id);
@@ -98,25 +79,77 @@ public class ContactsRepo(Contact[] list) : IRepo<Contact, int> {
         return true;
     }
 
-    public Task<bool> Save(Contact data) {
+    private bool Save(Contact data) {
         var index = _db.FindIndex(x => x.id == data.id);
         if (index == -1) {
             _db.Add(data);
         } else {
             _db[index] = data;
         }
-        return Task.FromResult(true);
+        return true;
     }
 
-    public Task<int> NextId() {
-        return Task.FromResult(_counter++);
+    public string? ValidateEmail(string? email, int? id = null) {
+        if (string.IsNullOrEmpty(email)) {
+            return "Email is Required!";
+        } else if (_db.Any(x => x.email == email && id is not null && id != x.id)) {
+            return "Email not Unique!";
+        }
+        return null;
     }
 
-    public Task<bool> Single(Func<Contact, bool> fn) {
-        return Task.FromResult(_db.Any(fn));
+    private static Errors Validate(ContactForm x) {
+        var errors = new Errors();
+
+        if (string.IsNullOrEmpty(x.first_name)) {
+            errors["first_name"] = "First Name is Required!";
+        }
+        if (string.IsNullOrEmpty(x.last_name)) {
+            errors["last_name"] = "Last Name is Required!";
+        }
+
+        return errors;
     }
 
-    public Task<bool> All(Func<Contact, bool> fn) {
-        return Task.FromResult(_db.All(fn));
+    public Result<Contact, Errors> Create(ContactForm x) {
+        var errors = Validate(x);
+        errors["email"] = ValidateEmail(x.email);
+
+        if (errors.IsEmpty()) {
+            var c = new Contact(
+                _counter++,
+                x.first_name!,
+                x.last_name!,
+                x.email!,
+                x.phone
+            );
+            if (Save(c)) {
+                return c;
+            }
+            errors["save"] = "Could not Save to Database"; // TODO
+        }
+
+        return errors;
+    }
+
+    public Result<Contact, Errors> Update(ContactForm x, int id) {
+        var errors = Validate(x);
+        errors["email"] = ValidateEmail(x.email, id);
+
+        if (errors.IsEmpty()) {
+            var c = new Contact(
+                id,
+                x.first_name!,
+                x.last_name!,
+                x.email!,
+                x.phone
+            );
+            if (Save(c)) {
+                return c;
+            }
+            errors["save"] = "Could not Save to Database"; // TODO
+        }
+
+        return errors;
     }
 }
