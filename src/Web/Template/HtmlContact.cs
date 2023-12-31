@@ -12,6 +12,7 @@ public static partial class Template {
                 <input name="email" id="email" type="email"
                        hx-get="/contacts/{{ x.id }}/email"
                        hx-target="next .error"
+                       hx-trigger="change, keyup delay:200ms changed"
                        placeholder="Email" value="{{ x.email }}">
                 <span class="error">{{ errors?["email"] }}</span>
             </p>
