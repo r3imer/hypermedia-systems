@@ -92,9 +92,12 @@ public static partial class Template {
             </fieldset>
         </form>
 
-        <form action="/contacts/{{id}}/delete" method="post">
-            <button>Delete Contact</button>
-        </form>
+        <button hx-delete="/contacts/{{id}}"
+                hx-target="body"
+                hx-confirm="Are you sure you want to delete this contact?"
+                hx-push-url="true">
+            Delete Contact
+        </button>
 
         <p>
             <a href="/contacts/">Back</a>

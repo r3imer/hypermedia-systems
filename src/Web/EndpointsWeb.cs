@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Reim.Htmx.Web.Template;
+using Reim.Http;
 
 namespace Reim.Htmx.Web;
+
+public class Endpoint {  };
 
 public static class EndpointsWeb {
     public static IEndpointRouteBuilder MapWebEndpoints(this IEndpointRouteBuilder x) {
@@ -88,14 +91,15 @@ public static class EndpointsWeb {
             );
         });
 
-        x.MapPost("/{id}/delete",
-        (int id, ContactsRepo db) => {
+        x.MapDelete("/{id}",
+        (int id, ContactsRepo db, HttpContext ctxt) => {
             if (db.Delete(id)) {
                 Flashes.Add("Delete Contact!");
             } else {
                 Flashes.Add($"Contact '{id}' not found");
             }
-            return Results.Redirect("/contacts");
+            //var r = TypedResults.StatusCode(303);
+            ctxt.Response303("/contacts");
         });
 
         return x;
