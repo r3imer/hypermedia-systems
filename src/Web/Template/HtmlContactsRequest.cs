@@ -3,9 +3,13 @@ namespace Reim.Htmx.Web.Template;
 public static partial class Template {
 
     public static string HtmlIndex(this ContactsRequest x) => $$"""
-        <form action="/contacts" method="get" class="tool-bar">
+        <form action="/contacts?size={{ x.pageSize }}" method="get" class="tool-bar">
           <label for="search">Search Term</label>
-          <input id="search" type="search" name="q" value="{{ x.q }}"/>
+          <input id="search" type="search" name="q" value="{{ x.q }}"
+                 hx-get="/contacts?size={{ x.pageSize }}"
+                 hx-target="tbody"
+                 hx-select="tbody tr"
+                 hx-trigger="search, keyup delay:300ms changed"/>
           <input type="submit" value="Search" />
         </form>
 
@@ -20,6 +24,16 @@ public static partial class Template {
             </tr>
           </thead>
           <tbody>
+            {{ x.HtmlRows() }}
+          </tbody>
+        </table>
+
+        <p>
+            <a href="/contacts/new">Add Contact</a>
+        </p>
+        """;
+
+    public static string HtmlRows(this ContactsRequest x) => $$"""
             {{ x.contacts.Select(x => x.ToDto().HtmlRow()).ToHtml() }}
             {{( x.contacts.Length == x.pageSize ? $$"""
                 <tr>
@@ -27,19 +41,13 @@ public static partial class Template {
                         <button hx-target="closest tr"
                                 hx-swap="outerHTML"
                                 hx-select="tbody > tr"
-                                hx-get="/contacts?page={{ x.page + 1 }}&size={{ x.pageSize }}">
+                                hx-get="/contacts?page={{ x.page + 1 }}&size={{ x.pageSize }}&q={{ x.q }}">
                           Load More
                         </button>
                     </td>
                 </tr>
                 """ : ""
             )}}
-          </tbody>
-        </table>
-
-        <p>
-            <a href="/contacts/new">Add Contact</a>
-        </p>
         """;
 
 }

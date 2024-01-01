@@ -12,7 +12,13 @@ public static class EndpointsWeb {
 
 
         x.MapGet("/",
-        (ContactsRepo db, string? q, int page = 0, int size=10) => {
+        (
+            ContactsRepo db,
+            string? q,
+            [FromHeader(Name = "HX-Trigger")] string? trigger,
+            int page = 0,
+            int size=10
+        ) => {
             var pageSize = size switch {
                 > 50 => 50,
                 < 1 => 1,
@@ -30,9 +36,11 @@ public static class EndpointsWeb {
                 .ToArray();
 
             var tmp = new ContactsRequest(pagable, q, page, size);
-            var html = tmp.HtmlIndex().HtmlLayout();
 
-            return html.AsHtml();
+            return trigger switch {
+                "search" => tmp.HtmlRows().AsHtml(),
+                _ => tmp.HtmlIndex().HtmlLayout().AsHtml(),
+            };
         });
 
         x.MapGet("/new",

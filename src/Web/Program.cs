@@ -24,11 +24,19 @@ serv.AddSingleton<ContactsRepo>(_
 
 serv.AddHttpLogging(opts => {
     opts.CombineLogs = true;
+    opts.RequestHeaders.Add("HX-Boosted");
+    opts.RequestHeaders.Add("HX-Current-URL");
+    opts.RequestHeaders.Add("HX-History-Restore-Request");
+    opts.RequestHeaders.Add("HX-Prompt");
+    opts.RequestHeaders.Add("HX-Request");
+    opts.RequestHeaders.Add("HX-Target");
+    opts.RequestHeaders.Add("HX-Trigger-Name");
+    opts.RequestHeaders.Add("HX-Trigger");
     opts.LoggingFields =
         HttpLoggingFields.Duration 
         | HttpLoggingFields.ResponseStatusCode
         | HttpLoggingFields.ResponseHeaders
-        //| HttpLoggingFields.RequestHeaders
+        | HttpLoggingFields.RequestHeaders
         ;
 });
 
