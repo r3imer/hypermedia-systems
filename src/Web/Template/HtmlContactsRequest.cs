@@ -24,12 +24,13 @@ public static partial class Template {
             {{( x.contacts.Length == x.pageSize ? $$"""
                 <tr>
                     <td colspan="5" style="text-align: center">
-                        <button hx-target="closest tr"
-                                hx-swap="outerHTML"
-                                hx-select="tbody > tr"
-                                hx-get="/contacts?page={{ x.page + 1 }}&size={{ x.pageSize }}">
+                        <span hx-target="closest tr"
+                              hx-trigger="revealed"
+                              hx-swap="outerHTML"
+                              hx-select="tbody > tr"
+                              hx-get="/contacts?page={{ x.page + 1 }}&size={{ x.pageSize }}">
                           Load More
-                        </button>
+                        </span>
                     </td>
                 </tr>
                 """ : ""
