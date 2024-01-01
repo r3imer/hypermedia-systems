@@ -46,7 +46,9 @@ public record Error {
 
 public record ContactsRequest(
     Contact[] contacts,
-    string? q
+    string? q,
+    int page,
+    int pageSize
 );
 
 //public class ContactsRepo(Contact[] list) : IRepo<Contact, int> {

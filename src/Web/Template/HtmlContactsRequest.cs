@@ -24,6 +24,17 @@ public static partial class Template {
           </tbody>
         </table>
 
+        <div>
+            <span style="float: right">
+                {{ (x.page >= 1
+                    ? $$"""<a href="/contacts?page={{ x.page - 1 }}&size={{ x.pageSize }}">Previous</a>""" : ""
+                )}}
+                {{ (x.contacts.Length == x.pageSize
+                    ? $$"""<a href="/contacts?page={{ x.page + 1 }}&size={{ x.pageSize }}">Next</a>""" : ""
+                )}}
+            </span>
+        </div>
+
         <p>
             <a href="/contacts/new">Add Contact</a>
         </p>

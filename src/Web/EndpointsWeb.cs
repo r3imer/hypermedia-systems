@@ -12,13 +12,24 @@ public static class EndpointsWeb {
 
 
         x.MapGet("/",
-        (string? q, ContactsRepo db) => {
+        (ContactsRepo db, string? q, int page = 0, int size=10) => {
+            var pageSize = size switch {
+                > 50 => 50,
+                < 1 => 1,
+                _ => size,
+            };
+
             var contacts = (q is null) switch {
                 false => db.Search(q),
                 true => db.All(),
             };
 
-            var tmp = new ContactsRequest(contacts, q);
+            var pagable = contacts
+                .Skip(size * page)
+                .Take(size)
+                .ToArray();
+
+            var tmp = new ContactsRequest(pagable, q, page, size);
             var html = tmp.HtmlIndex().HtmlLayout();
 
             return html.AsHtml();
