@@ -29,7 +29,7 @@ public static partial class Template {
                               hx-swap="outerHTML"
                               hx-select="tbody > tr"
                               hx-get="/contacts?page={{ x.page + 1 }}&size={{ x.pageSize }}">
-                          Load More
+                          Loading More ...
                         </span>
                     </td>
                 </tr>
