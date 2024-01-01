@@ -21,19 +21,21 @@ public static partial class Template {
           </thead>
           <tbody>
             {{ x.contacts.Select(x => x.ToDto().HtmlRow()).ToHtml() }}
+            {{( x.contacts.Length == x.pageSize ? $$"""
+                <tr>
+                    <td colspan="5" style="text-align: center">
+                        <button hx-target="closest tr"
+                                hx-swap="outerHTML"
+                                hx-select="tbody > tr"
+                                hx-get="/contacts?page={{ x.page + 1 }}&size={{ x.pageSize }}">
+                          Load More
+                        </button>
+                    </td>
+                </tr>
+                """ : ""
+            )}}
           </tbody>
         </table>
-
-        <div>
-            <span style="float: right">
-                {{( x.page >= 1
-                    ? $$"""<a href="/contacts?page={{ x.page - 1 }}&size={{ x.pageSize }}">Previous</a>""" : ""
-                )}}
-                {{( x.contacts.Length == x.pageSize
-                    ? $$"""<a href="/contacts?page={{ x.page + 1 }}&size={{ x.pageSize }}">Next</a>""" : ""
-                )}}
-            </span>
-        </div>
 
         <p>
             <a href="/contacts/new">Add Contact</a>
