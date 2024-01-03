@@ -10,7 +10,7 @@ public static partial class Template {
                  hx-target="tbody"
                  hx-select="tbody tr"
                  hx-push-url="true"
-                 hx-trigger="search, keyup delay:300ms changed"/>
+                 hx-trigger="keyup delay:300ms changed"/>
           <input type="submit" value="Search" />
         </form>
 
