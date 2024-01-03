@@ -34,7 +34,7 @@ public record Errors {
     public string? this[string key] {
         get => _dic.TryGetValue(key, out var value) ? value : null;
         set {
-            if (value is null) return;
+            if (value is null) { return; }
             _dic[key] = value;
         }
     }
