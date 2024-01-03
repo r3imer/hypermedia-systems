@@ -65,25 +65,25 @@ public static partial class Template {
     public static string HtmlShow(this ContactDto x) => $$"""
         <h1>{{ x.first_name }} {{ x.last_name }}</h1>
         <div>
-          <div>Phone: {{ x.phone }}</div>
-          <div>Email: {{ x.email }}</div>
+            <div>Phone: {{ x.phone }}</div>
+            <div>Email: {{ x.email }}</div>
         </div>
         <p>
-          <a href="/contacts/{{ x.id }}/edit">Edit</a>
-          <a href="/contacts">Back</a>
+            <a href="/contacts/{{ x.id }}/edit">Edit</a>
+            <a href="/contacts">Back</a>
         </p>
         """;
 
     public static string HtmlRow(this ContactDto x) => $$"""
         <tr>
-          <td>{{ x.first_name }}</td>
-          <td>{{ x.last_name }}</td>
-          <td>{{ x.phone }}</td>
-          <td>{{ x.email }}</td>
-          <td>
-              <a href="/contacts/{{ x.id }}/edit">Edit</a>
-              <a href="/contacts/{{ x.id }}">View</a>
-          </td>
+            <td>{{ x.first_name }}</td>
+            <td>{{ x.last_name }}</td>
+            <td>{{ x.phone }}</td>
+            <td>{{ x.email }}</td>
+            <td>
+                <a href="/contacts/{{ x.id }}/edit">Edit</a>
+                <a href="/contacts/{{ x.id }}">View</a>
+            </td>
         </tr>
         """;
 
