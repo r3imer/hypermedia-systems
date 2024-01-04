@@ -15,23 +15,13 @@ public static class EndpointsWeb {
         x.MapGet("/",
         (
             ContactsRepo db,
-            string? q,
             [FromHeader(Name = "HX-Trigger")] string? trigger,
+            string? q,
             int page = 0
         ) => {
             var query = new QueryContacts(q, page);
 
-            Contact[] c1 = (q is null) switch {
-                false => db.Search(q),
-                true => db.All(),
-            };
-
-            var c2 = c1
-                .Skip(Const.PAGE_SIZE * page)
-                .Take(Const.PAGE_SIZE)
-                .ToArray();
-
-            var c = new Contacts(c2, query);
+            var c = db.Query(query);
 
             return trigger switch {
                 "search" => c.HtmlRows().AsHtml(),

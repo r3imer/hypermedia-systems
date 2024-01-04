@@ -44,21 +44,29 @@ public record Error {
     }
 }
 
-public record QueryContacts(
-    string? q,
-    int page
-);
+public record QueryContacts(string? q, int page);
 
-public record Contacts(
-    Contact[] arr,
-    QueryContacts q
-);
+public record Contacts(Contact[] arr, QueryContacts q);
 
 //public class ContactsRepo(Contact[] list) : IRepo<Contact, int> {
 public class ContactsRepo(Contact[] list) {
 
     private readonly List<Contact> _db = [.. list];
     private int _counter = list.Length;
+
+    public Contacts Query(QueryContacts query) {
+        Contact[] c1 = (query.q is null) switch {
+            false => Search(query.q),
+            true => All(),
+        };
+
+        var c2 = c1
+            .Skip(Const.PAGE_SIZE * query.page)
+            .Take(Const.PAGE_SIZE)
+            .ToArray();
+
+        return new Contacts(c2, query);
+    }
 
     public Contact[] All() => _db.ToArray();
 
