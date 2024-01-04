@@ -2,11 +2,11 @@ namespace Reim.Htmx.Web.Template;
 
 public static partial class Template {
 
-    public static string HtmlIndex(this ContactsRequest x) => $$"""
-        <form action="/contacts?size={{ x.pageSize }}" method="get" class="tool-bar">
+    public static string HtmlIndex(this Contacts a) => $$"""
+        <form action="/contacts" method="get" class="tool-bar">
             <label for="search">Search Term</label>
-            <input id="search" type="search" name="q" value="{{ x.q }}"
-                   hx-get="/contacts?size={{ x.pageSize }}"
+            <input id="search" type="search" name="q" value="{{ a.q.q }}"
+                   hx-get="/contacts"
                    hx-target="tbody"
                    hx-select="tbody tr"
                    hx-push-url="true"
@@ -24,7 +24,7 @@ public static partial class Template {
                 </tr>
             </thead>
             <tbody>
-                {{ x.HtmlRows() }}
+                {{ a.HtmlRows() }}
             </tbody>
         </table>
         <p>
@@ -32,21 +32,28 @@ public static partial class Template {
         </p>
         """;
 
-    public static string HtmlRows(this ContactsRequest x) => $$"""
-            {{ x.contacts.Select(x => x.ToDto().HtmlRow()).ToHtml() }}
-            {{( x.contacts.Length == x.pageSize ? $$"""
-                <tr>
-                    <td colspan="5" style="text-align: center">
-                        <button hx-target="closest tr"
-                                hx-swap="outerHTML"
-                                hx-select="tbody > tr"
-                                hx-get="/contacts?page={{ x.page + 1 }}&size={{ x.pageSize }}&q={{ x.q }}">
-                            Load More
-                        </button>
-                    </td>
-                </tr>
-                """ : ""
-            )}}
-        """;
+    public static string HtmlRows(this Contacts a) => a.arr.Select(b => $$"""
+        <tr>
+            <td>{{ b.first }}</td>
+            <td>{{ b.last }}</td>
+            <td>{{ b.phone }}</td>
+            <td>{{ b.email }}</td>
+            <td>
+                <a href="/contacts/{{ b.id }}/edit">Edit</a>
+                <a href="/contacts/{{ b.id }}">View</a>
+            </td>
+        </tr>
+        """).Join() + ( a.arr.Length == Const.PAGE_SIZE ? $$"""
+            <tr>
+                <td colspan="5" style="text-align: center">
+                    <button hx-target="closest tr"
+                            hx-swap="outerHTML"
+                            hx-select="tbody > tr"
+                            hx-get="/contacts?page={{ a.q.page + 1 }}&q={{ a.q.q }}">
+                        Load More
+                    </button>
+                </td>
+            </tr>
+        """ : "");
 
 }

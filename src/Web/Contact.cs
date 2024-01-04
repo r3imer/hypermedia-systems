@@ -44,11 +44,14 @@ public record Error {
     }
 }
 
-public record ContactsRequest(
-    Contact[] contacts,
+public record QueryContacts(
     string? q,
-    int page,
-    int pageSize
+    int page
+);
+
+public record Contacts(
+    Contact[] arr,
+    QueryContacts q
 );
 
 //public class ContactsRepo(Contact[] list) : IRepo<Contact, int> {

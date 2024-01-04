@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Reim.Htmx.Web;
 using Reim.Htmx.Web.Template;
 using Reim.Http;
 using Reim.Std.Domain;
@@ -16,30 +17,25 @@ public static class EndpointsWeb {
             ContactsRepo db,
             string? q,
             [FromHeader(Name = "HX-Trigger")] string? trigger,
-            int page = 0,
-            int size=10
+            int page = 0
         ) => {
-            var pageSize = size switch {
-                > 50 => 50,
-                < 1 => 1,
-                _ => size,
-            };
+            var query = new QueryContacts(q, page);
 
-            var contacts = (q is null) switch {
+            Contact[] c1 = (q is null) switch {
                 false => db.Search(q),
                 true => db.All(),
             };
 
-            var pagable = contacts
-                .Skip(size * page)
-                .Take(size)
+            var c2 = c1
+                .Skip(Const.PAGE_SIZE * page)
+                .Take(Const.PAGE_SIZE)
                 .ToArray();
 
-            var tmp = new ContactsRequest(pagable, q, page, size);
+            var c = new Contacts(c2, query);
 
             return trigger switch {
-                "search" => tmp.HtmlRows().AsHtml(),
-                _ => tmp.HtmlIndex().HtmlLayout().AsHtml(),
+                "search" => c.HtmlRows().AsHtml(),
+                _ => c.HtmlIndex().HtmlLayout().AsHtml(),
             };
         });
 

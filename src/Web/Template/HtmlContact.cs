@@ -74,10 +74,10 @@ public static partial class Template {
         </p>
         """;
 
-    public static string HtmlRow(this ContactDto x) => $$"""
+    public static string HtmlRow(this Contact x) => $$"""
         <tr>
-            <td>{{ x.first_name }}</td>
-            <td>{{ x.last_name }}</td>
+            <td>{{ x.first }}</td>
+            <td>{{ x.last }}</td>
             <td>{{ x.phone }}</td>
             <td>{{ x.email }}</td>
             <td>

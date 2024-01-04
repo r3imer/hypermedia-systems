@@ -1,5 +1,9 @@
 namespace Reim.Htmx.Web;
 
+public static class Const {
+    public const int PAGE_SIZE = 10;
+}
+
 public static class ExtDomain {
     public static ContactDto ToDto(this ContactForm x, int? id)
         => new(x.first_name, x.last_name, x.phone, x.email, id);
