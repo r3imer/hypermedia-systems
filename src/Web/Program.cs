@@ -1,7 +1,7 @@
-using Reim.Htmx.Web;
-using System.Text.Json;
 using Microsoft.AspNetCore.HttpLogging;
 using NLog.Web;
+using Reim.Htmx.Web;
+using System.Text.Json;
 
 ILoggerFactory loggerFactory = LoggerFactory.Create(builder => builder.AddNLog("nlog.config"));
 ILogger<Program> logger = loggerFactory.CreateLogger<Program>();
