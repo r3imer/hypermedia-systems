@@ -11,7 +11,7 @@ public static class EndpointsWeb {
 
 
         x.MapGet("/",
-        (
+        async (
             ContactsRepo db,
             [FromHeader(Name = "HX-Trigger")] string? trigger,
             string? q,
@@ -19,7 +19,7 @@ public static class EndpointsWeb {
         ) => {
             var query = new QueryContacts(q, page);
 
-            var c = db.Query(query);
+            var c = await db.Query(query);
 
             return trigger switch {
                 "search" => c.HtmlRows().AsHtml(),
