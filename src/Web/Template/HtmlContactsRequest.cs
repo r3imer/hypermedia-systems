@@ -31,6 +31,9 @@ public static partial class Template {
         </table>
         <p>
             <a href="/contacts/new">Add Contact</a>
+            <span hx-get="/contacts/count" hx-trigger="load">
+              <img style="height: 20px" id="spinner" class="htmx-indicator" src="/static/img/spinning-circles.svg"/>
+            </span>
         </p>
         """;
 

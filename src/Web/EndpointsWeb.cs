@@ -9,7 +9,6 @@ public class Endpoint {  };
 public static class EndpointsWeb {
     public static IEndpointRouteBuilder MapWebEndpoints(this IEndpointRouteBuilder x) {
 
-
         x.MapGet("/",
         async (
             ContactsRepo db,
@@ -25,6 +24,13 @@ public static class EndpointsWeb {
                 "search" => c.HtmlRows().AsHtml(),
                 _ => c.HtmlIndex().HtmlLayout().AsHtml(),
             };
+        });
+
+        x.MapGet("/count",
+        async (ContactsRepo db) => {
+            await Task.Delay(1500);
+            var total = db.All().Length;
+            return $"({total} total Contacts)".AsHtml();
         });
 
         x.MapGet("/new",
