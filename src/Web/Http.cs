@@ -1,12 +1,31 @@
 using Microsoft.Net.Http.Headers;
+using System.Net.Mime;
 
 namespace Reim.Http;
 
 public static class Http {
-    public static HttpResponse Response303(this HttpContext x, string url) {
+    public static void Response303(this HttpContext x, string url) {
         x.Response.Headers[HeaderNames.Location] = url;
         x.Response.StatusCode = StatusCodes.Status303SeeOther;
-        return x.Response;
+    }
+
+    public static async Task Response200Html(
+        this HttpContext x,
+        string html,
+        CancellationToken cancel = default
+    ) {
+        x.Response.StatusCode = StatusCodes.Status200OK;
+        x.Response.ContentType = MediaTypeNames.Text.Html;
+        await x.Response.WriteAsync(html, cancel);
+    }
+
+    public static async Task Response200Json<T>(
+        this HttpContext x,
+        T type,
+        CancellationToken cancel = default
+    ) {
+        x.Response.StatusCode = StatusCodes.Status200OK;
+        await x.Response.WriteAsJsonAsync(type, cancel);
     }
 }
 
