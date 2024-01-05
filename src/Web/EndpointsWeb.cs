@@ -28,8 +28,8 @@ public static class EndpointsWeb {
 
         x.MapGet("/count",
         async (ContactsRepo db) => {
-            await Task.Delay(1500);
-            var total = db.All().Length;
+            await Task.Delay(400);
+            var total = (await db.All()).Length;
             return $"({total} total Contacts)".AsHtml();
         });
 
