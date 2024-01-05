@@ -17,7 +17,7 @@ public static partial class Template {
         <html lang="en">
         <head>
             <title>Contact App</title>
-            <link rel="stylesheet" href="/static/missing.css">
+            <link rel="stylesheet" href="/static/missing-1.1.1.css">
             <link rel="stylesheet" href="/static/site.css">
             <script src="/static/js/htmx-1.9.10.js"></script>
             <script src="/static/js/_hyperscript-0.9.12.js"></script>
