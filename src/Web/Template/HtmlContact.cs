@@ -51,7 +51,8 @@ public static partial class Template {
         <form action="/contacts/{{ x.id }}/edit" method="post">
             {{ x.HtmlForm(errors) }}
         </form>
-        <button hx-delete="/contacts/{{ x.id }}"
+        <button id="delete-btn"
+                hx-delete="/contacts/{{ x.id }}"
                 hx-target="body"
                 hx-confirm="Are you sure you want to delete this contact?"
                 hx-push-url="true">

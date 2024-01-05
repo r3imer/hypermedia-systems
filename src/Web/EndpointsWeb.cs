@@ -98,13 +98,19 @@ public static class EndpointsWeb {
         });
 
         x.MapDelete("/{id}",
-        (int id, ContactsRepo db, HttpContext ctxt) => {
-            if (db.Delete(id)) {
+        async (
+            [FromHeader(Name = "HX-Trigger")] string? trigger,
+            int id,
+            ContactsRepo db,
+            HttpContext ctxt
+        ) => {
+            var found = db.Delete(id);
+            if (found && trigger == "delete-btn") {
                 Flashes.Add("Delete Contact!");
+                ctxt.Response303("/contacts");
             } else {
-                Flashes.Add($"Contact '{id}' not found");
+                await ctxt.Response200Html("");
             }
-            ctxt.Response303("/contacts");
         });
 
         return x;

@@ -47,8 +47,9 @@ public static partial class Template {
                 <a href="/contacts/{{ b.id }}/edit">Edit</a>
                 <a href="/contacts/{{ b.id }}">View</a>
                 <a href="#" hx-delete="/contacts/{{ b.id }}"
+                   hx-swap="outerHTML"
                    hx-confirm="Are you sure you want to delete this contact?"
-                   hx-target="body">Delete</a>
+                   hx-target="closest tr">Delete</a>
             </td>
         </tr>
         """).Join() + ( a.arr.Length == Const.PAGE_SIZE ? $$"""
