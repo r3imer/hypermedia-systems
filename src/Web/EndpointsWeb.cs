@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Reim.Htmx.Web;
 using Reim.Htmx.Web.Template;
 using Reim.Http;
-using Reim.Std.Domain;
 
 namespace Reim.Htmx.Web;
 
@@ -11,9 +9,8 @@ public class Endpoint {  };
 public static class EndpointsWeb {
     public static IEndpointRouteBuilder MapWebEndpoints(this IEndpointRouteBuilder x) {
 
-
         x.MapGet("/",
-        (
+        async (
             ContactsRepo db,
             [FromHeader(Name = "HX-Trigger")] string? trigger,
             string? q,
@@ -21,12 +18,19 @@ public static class EndpointsWeb {
         ) => {
             var query = new QueryContacts(q, page);
 
-            var c = db.Query(query);
+            var c = await db.Query(query);
 
             return trigger switch {
                 "search" => c.HtmlRows().AsHtml(),
                 _ => c.HtmlIndex().HtmlLayout().AsHtml(),
             };
+        });
+
+        x.MapGet("/count",
+        async (ContactsRepo db) => {
+            await Task.Delay(1500);
+            var total = db.All().Length;
+            return $"({total} total Contacts)".AsHtml();
         });
 
         x.MapGet("/new",

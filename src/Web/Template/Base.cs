@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http.HttpResults;
-
 namespace Reim.Htmx.Web.Template;
 
 public static partial class Template {

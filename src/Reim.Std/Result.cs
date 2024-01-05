@@ -1,5 +1,3 @@
-using Reim.Std.Domain;
-
 namespace Reim.Std;
 
 public static partial class Result {

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
 namespace Reim.Http;

@@ -54,7 +54,7 @@ public class ContactsRepo(Contact[] list) {
     private readonly List<Contact> _db = [.. list];
     private int _counter = list.Length;
 
-    public Contacts Query(QueryContacts query) {
+    public async Task<Contacts> Query(QueryContacts query) {
         Contact[] c1 = (query.q is null) switch {
             false => Search(query.q),
             true => All(),
@@ -64,6 +64,8 @@ public class ContactsRepo(Contact[] list) {
             .Skip(Const.PAGE_SIZE * query.page)
             .Take(Const.PAGE_SIZE)
             .ToArray();
+
+        await Task.Delay(1000);
 
         return new Contacts(c2, query);
     }

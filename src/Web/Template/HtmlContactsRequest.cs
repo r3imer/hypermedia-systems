@@ -10,8 +10,10 @@ public static partial class Template {
                    hx-target="tbody"
                    hx-select="tbody tr"
                    hx-push-url="true"
+                   hx-indicator="#spinner"
                    hx-trigger="keyup delay:300ms changed"/>
             <input type="submit" value="Search" />
+            <img style="height: 26px" id="spinner" class="htmx-indicator" src="/static/img/spinning-circles.svg"/>
         </form>
         <table>
             <thead>
@@ -29,6 +31,9 @@ public static partial class Template {
         </table>
         <p>
             <a href="/contacts/new">Add Contact</a>
+            <span hx-get="/contacts/count" hx-trigger="load">
+              <img style="height: 20px" id="spinner" class="htmx-indicator" src="/static/img/spinning-circles.svg"/>
+            </span>
         </p>
         """;
 
