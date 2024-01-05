@@ -26,6 +26,14 @@ public static class EndpointsWeb {
             };
         });
 
+        x.MapDelete("/",
+        async ([FromForm] ContactDeleteForm form, ContactsRepo db) => {
+            _ = form.selected_contact_ids.Select(x => db.Delete(x)).ToArray();
+            Flashes.Add("Deleted Contacts!");
+            Contacts c = await db.Query(new());
+            return c.HtmlIndex().HtmlLayout().AsHtml();
+        });
+
         x.MapGet("/count",
         async (ContactsRepo db) => {
             await Task.Delay(400);

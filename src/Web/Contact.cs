@@ -29,6 +29,10 @@ public record ContactForm(
     string? email = null
 );
 
+public record ContactDeleteForm(
+    int[] selected_contact_ids
+);
+
 public record Contact(
     int id,
     string first,
@@ -44,7 +48,7 @@ public record Error {
     }
 }
 
-public record QueryContacts(string? q, int page);
+public record QueryContacts(string? q = null, int page = 0);
 
 public record Contacts(Contact[] arr, QueryContacts q);
 

@@ -14,31 +14,38 @@ public static partial class Template {
                    hx-trigger="keyup delay:300ms changed"/>
             <input type="submit" value="Search" />
             <img style="height: 26px" id="spinner" class="htmx-indicator" src="/static/img/spinning-circles.svg"/>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>First</th>
+                        <th>Last</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ a.HtmlRows() }}
+                </tbody>
+                <button hx-delete="/contacts"
+                        hx-confirm="Are you sure you want to delete these contacts?"
+                        hx-target="body">
+                    Delete Selected Contacts
+                </button>
+            </table>
         </form>
-        <table>
-            <thead>
-                <tr>
-                    <th>First</th>
-                    <th>Last</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {{ a.HtmlRows() }}
-            </tbody>
-        </table>
         <p>
             <a href="/contacts/new">Add Contact</a>
             <span hx-get="/contacts/count" hx-trigger="load">
-              <img style="height: 20px" id="spinner" class="htmx-indicator" src="/static/img/spinning-circles.svg"/>
+                <img style="height: 20px" id="spinner" class="htmx-indicator" src="/static/img/spinning-circles.svg"/>
             </span>
         </p>
         """;
 
     public static string HtmlRows(this Contacts a) => a.arr.Select(b => $$"""
         <tr>
+            <td><input type="checkbox" name="selected_contact_ids" value="{{ b.id }}"></td>
             <td>{{ b.first }}</td>
             <td>{{ b.last }}</td>
             <td>{{ b.phone }}</td>
