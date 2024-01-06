@@ -68,3 +68,29 @@ td {
 tr:is(:hover, :focus-within) [data-overflow-menu] {
     visibility: visible;
 }
+
+.my-indicator {
+    display: none;
+}
+
+.htmx-request .my-indicator {
+    display: inline;
+}
+
+.htmx-request.my-indicator {
+    display: inline;
+}
+
+.htmx-indicator {
+    opacity: 0;
+}
+
+.htmx-request.htmx-indicator {
+    opacity: 1;
+    transition: opacity 200ms ease-in;
+}
+
+.htmx-request .htmx-indicator {
+    opacity: 1;
+    transition: opacity 200ms ease-in;
+}
