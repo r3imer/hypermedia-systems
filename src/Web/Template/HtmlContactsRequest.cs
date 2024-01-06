@@ -18,16 +18,18 @@ public static partial class Template {
                         <div hx-get="/contacts/archive" hx-trigger="load delay:500ms">
                             Creating Archive...
                             <div class="progress" >
-                                <div class="progress-bar" role="progressbar"
+                                <div id="archive-progress" class="progress-bar" role="progressbar"
                                      aria-valuenow="{{ p }}"
                                      style="width:{{ p }}%"></div>
                             </div>
                         </div>
                         """,
                     Status.Complete => """
-                        <a hx-boost="false" href="/contacts/archive/file">
+                        <a hx-boost="false" href="/contacts/archive/file"
+                           _="on load click() me">
                             Archive Ready!  Click here to download. &downarrow;
                         </a>
+                        <button hx-delete="/contacts/archive">Clear Download</button>
                         """,
                 }}}
             </div>
@@ -43,10 +45,10 @@ public static partial class Template {
                    hx-target="tbody"
                    hx-select="tbody tr"
                    hx-push-url="true"
-                   hx-indicator="#spinner"
+                   hx-indicator="#spinner-search"
                    hx-trigger="keyup delay:300ms changed"/>
             <input type="submit" value="Search" />
-            <img style="height: 26px" id="spinner" class="htmx-indicator" src="/static/img/spinning-circles.svg"/>
+            <img style="height: 26px" id="spinner-search" class="htmx-indicator" src="/static/img/tail-spin.svg"/>
             <table>
                 <thead>
                     <tr>
@@ -71,7 +73,7 @@ public static partial class Template {
         <p>
             <a href="/contacts/new">Add Contact</a>
             <span hx-get="/contacts/count" hx-trigger="load">
-                <img style="height: 20px" id="spinner" class="htmx-indicator" src="/static/img/spinning-circles.svg"/>
+                <img style="height: 20px" class="my-indicator" src="/static/img/tail-spin.svg"/>
             </span>
         </p>
         """;
@@ -100,6 +102,7 @@ public static partial class Template {
                             hx-select="tbody > tr"
                             hx-get="/contacts?page={{ a.q.page + 1 }}&q={{ a.q.q }}">
                         Load More
+                        <img style="height: 20px" class="my-indicator" src="/static/img/tail-spin.svg"/>
                     </button>
                 </td>
             </tr>

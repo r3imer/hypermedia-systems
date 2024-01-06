@@ -137,10 +137,15 @@ public static class EndpointsWeb {
             return a.HtmlArchiver().AsHtml();
         });
 
+        x.MapDelete("/archive",(IArchiver a) => {
+            a.reset();
+            return a.HtmlArchiver().AsHtml();
+        });
+
         x.MapGet("/archive/file",(IArchiver a) => {
-            var url = a.archive_file();
             return Results.File(a.archive_file(), fileDownloadName: "archive.json");
         });
+
 
         return x;
     }

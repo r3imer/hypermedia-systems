@@ -22,8 +22,8 @@ serv.AddSingleton<ContactsRepo>(_
         File.ReadAllText("contacts2.json")) ?? []
     )
 );
-//serv.AddSingleton<IArchiver, FakeTimeArchiver>();
-serv.AddSingleton<IArchiver, FakeCountArchiver>();
+serv.AddSingleton<IArchiver, FakeTimeArchiver>();
+//serv.AddSingleton<IArchiver, FakeCountArchiver>();
 
 serv.AddHttpLogging(opts => {
     opts.CombineLogs = true;
@@ -50,12 +50,6 @@ var log = app.Services.GetService<ILogger<Program>>()!;
 app.UseStaticFiles();
 app.UseHttpLogging();
 app.UseAntiforgery();
-
-app.Use((ctxt, next) => {
-    //log.
-    var r = next(ctxt);
-    return r;
-});
 
 app.MapGet("/", () => Results.Redirect("/contacts"));
 

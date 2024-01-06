@@ -20,8 +20,8 @@ public interface IArchiver {
 
 public class FakeCountArchiver(ContactsRepo db) : IArchiver {
     const double FINISHED = 20;
-    int? _count = null;
-    static readonly JsonSerializerOptions s_opts = new() { WriteIndented = true };
+    int _count = 0;
+    Status _status = Status.Waiting;
 
     public byte[] archive_file() {
         if (status() is Status.Complete) {
@@ -32,30 +32,34 @@ public class FakeCountArchiver(ContactsRepo db) : IArchiver {
         return [];
     }
 
-    public double progress() => _count++ switch {
-        int c => (c/FINISHED) switch {
-            > 1 => 1,
+    public double progress() {
+        if (_status is Status.Waiting) return 0;
+        if (_status is Status.Complete) return 1;
+        _count++;
+        var r = (_count/FINISHED) switch {
+            >1 => 1,
+            <0 => 0,
             var x => x,
-        },
-        _ => 0
-    };
+        };
+        if (r == 1) { _status = Status.Complete; }
+        return r;
+    }
 
     public void reset() {
-        _count = null;
+        _count = 0;
+        _status = Status.Waiting;
     }
 
     public void run() {
         _count = 0;
+        _status = Status.Running;
     }
 
-    public Status status() => progress() switch {
-        > 0 and < 1 => Status.Running,
-        >= 1 => Status.Complete,
-        _ => Status.Waiting,
-    };
+    public Status status() => _status; 
 }
 
 public class FakeTimeArchiver(ContactsRepo db) : IArchiver {
+    const double FINISHED = 14;
     DateTime? _started = null;
 
     public byte[] archive_file() {
@@ -68,7 +72,7 @@ public class FakeTimeArchiver(ContactsRepo db) : IArchiver {
     }
 
     public double progress() => _started switch {
-        DateTime s => ((DateTime.UtcNow - s).TotalSeconds / 15.0) switch {
+        DateTime s => ((DateTime.UtcNow - s).TotalSeconds / FINISHED) switch {
             > 1 => 1,
             < 0 => 0,
             var x => x,
