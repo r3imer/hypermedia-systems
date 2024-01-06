@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.HttpLogging;
 using NLog.Web;
+using Reim.Htmx.Archiver;
 using Reim.Htmx.Web;
 using System.Text.Json;
 
@@ -21,6 +22,8 @@ serv.AddSingleton<ContactsRepo>(_
         File.ReadAllText("contacts2.json")) ?? []
     )
 );
+//serv.AddSingleton<IArchiver, FakeTimeArchiver>();
+serv.AddSingleton<IArchiver, FakeCountArchiver>();
 
 serv.AddHttpLogging(opts => {
     opts.CombineLogs = true;

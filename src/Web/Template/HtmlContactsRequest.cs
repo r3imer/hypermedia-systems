@@ -1,8 +1,38 @@
+using Reim.Htmx.Archiver;
+
 namespace Reim.Htmx.Web.Template;
 
 public static partial class Template {
 
-    public static string HtmlIndex(this Contacts a) => $$"""
+    public static string HtmlArchiver(this IArchiver a) {
+        int p = (int) (a.progress() * 100);
+        return $$"""
+            <div id="archive-ui" hx-target="this" hx-swap="outerHTML">
+                {{ a.status() switch {
+                    Status.Waiting => $$"""
+                        <button hx-post="/contacts/archive">
+                            Download Contact Archive
+                        </button>
+                        """,
+                    Status.Running => $$"""
+                        <div hx-get="/contacts/archive" hx-trigger="load delay:500ms">
+                            Creating Archive...
+                            <div class="progress" >
+                                <div class="progress-bar" role="progressbar"
+                                     aria-valuenow="{{ p }}"
+                                     style="width:{{ p }}%"></div>
+                            </div>
+                        </div>
+                        """,
+                    Status.Complete =>
+                        "",
+                }}}
+            </div>
+            """;
+    }
+
+    public static string HtmlIndex(this Contacts a, IArchiver b) => $$"""
+        <p>{{ b.HtmlArchiver() }}</p>
         <form action="/contacts" method="get" class="tool-bar">
             <label for="search">Search Term</label>
             <input id="search" type="search" name="q" value="{{ a.q.q }}"

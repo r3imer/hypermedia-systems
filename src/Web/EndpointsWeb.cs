@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Reim.Htmx.Archiver;
 using Reim.Htmx.Web.Template;
 using Reim.Http;
 
@@ -10,34 +11,38 @@ public static class EndpointsWeb {
     public static IEndpointRouteBuilder MapWebEndpoints(this IEndpointRouteBuilder x) {
 
         x.MapGet("/",
-        async (
+        (
             ContactsRepo db,
+            IArchiver ar,
             [FromHeader(Name = "HX-Trigger")] string? trigger,
             string? q,
             int page = 0
         ) => {
             var query = new QueryContacts(q, page);
 
-            var c = await db.Query(query);
+            var c = db.Query(query);
 
             return trigger switch {
                 "search" => c.HtmlRows().AsHtml(),
-                _ => c.HtmlIndex().HtmlLayout().AsHtml(),
+                _ => c.HtmlIndex(ar).HtmlLayout().AsHtml(),
             };
         });
 
         x.MapDelete("/",
-        async ([FromForm] ContactDeleteForm form, ContactsRepo db) => {
+        (
+            [FromForm] ContactDeleteForm form,
+            ContactsRepo db,
+            IArchiver ar
+        ) => {
             _ = form.selected_contact_ids.Select(x => db.Delete(x)).ToArray();
             Flashes.Add("Deleted Contacts!");
-            Contacts c = await db.Query(new());
-            return c.HtmlIndex().HtmlLayout().AsHtml();
+            Contacts c = db.Query(new());
+            return c.HtmlIndex(ar).HtmlLayout().AsHtml();
         });
 
         x.MapGet("/count",
-        async (ContactsRepo db) => {
-            await Task.Delay(400);
-            var total = (await db.All()).Length;
+        (ContactsRepo db) => {
+            var total = db.All().Length;
             return $"({total} total Contacts)".AsHtml();
         });
 
@@ -119,6 +124,17 @@ public static class EndpointsWeb {
             } else {
                 await ctxt.Response200Html("");
             }
+        });
+
+        x.MapGet("/archive",
+        (IArchiver a) => {
+            return a.HtmlArchiver().AsHtml();
+        });
+
+        x.MapPost("/archive",
+        (IArchiver a) => {
+            a.run();
+            return a.HtmlArchiver().AsHtml();
         });
 
         return x;

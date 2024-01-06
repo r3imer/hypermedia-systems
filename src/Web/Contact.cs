@@ -58,8 +58,8 @@ public class ContactsRepo(Contact[] list) {
     private readonly List<Contact> _db = [.. list];
     private int _counter = list.Length;
 
-    public async Task<Contacts> Query(QueryContacts query) {
-        Contact[] c1 = await ((query.q is null) switch {
+    public Contacts Query(QueryContacts query) {
+        Contact[] c1 = ((query.q is null) switch {
             false => Search(query.q),
             true => All(),
         });
@@ -72,14 +72,12 @@ public class ContactsRepo(Contact[] list) {
         return new Contacts(c2, query);
     }
 
-    public async Task<Contact[]> All() {
-        await Task.Delay(600);
+    public Contact[] All() {
         return _db.ToArray();
     }
 
-    public async Task<Contact[]> Search(string text) {
+    public Contact[] Search(string text) {
         var compare = StringComparison.InvariantCultureIgnoreCase;
-        await Task.Delay(300);
         return _db.Where(x =>
             (x.first?.Contains(text, compare) ?? false) ||
             (x.last?.Contains(text, compare) ?? false) ||
