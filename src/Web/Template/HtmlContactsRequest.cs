@@ -24,8 +24,11 @@ public static partial class Template {
                             </div>
                         </div>
                         """,
-                    Status.Complete =>
-                        "",
+                    Status.Complete => """
+                        <a hx-boost="false" href="/contacts/archive/file">
+                            Archive Ready!  Click here to download. &downarrow;
+                        </a>
+                        """,
                 }}}
             </div>
             """;

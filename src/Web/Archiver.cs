@@ -1,3 +1,6 @@
+using Reim.Htmx.Web;
+using System.Text.Json;
+
 namespace Reim.Htmx.Archiver;
 
 public enum Status {
@@ -11,18 +14,23 @@ public interface IArchiver {
     double progress(); // [0,1]
     void run();
     void reset();
-    string? archive_file();
+    byte[] archive_file();
     //IArchiver get();
 }
 
-public class FakeCountArchiver : IArchiver {
+public class FakeCountArchiver(ContactsRepo db) : IArchiver {
     const double FINISHED = 20;
     int? _count = null;
+    static readonly JsonSerializerOptions s_opts = new() { WriteIndented = true };
 
-    public string? archive_file() => status() switch {
-        Status.Complete => "", // TODO
-        _ => null,
-    };
+    public byte[] archive_file() {
+        if (status() is Status.Complete) {
+            var all = db.All();
+            //var bytes = JsonSerializer.SerializeAsync()
+            return all.ToJsonBytes();
+        }
+        return [];
+    }
 
     public double progress() => _count++ switch {
         int c => (c/FINISHED) switch {
@@ -47,13 +55,17 @@ public class FakeCountArchiver : IArchiver {
     };
 }
 
-public class FakeTimeArchiver : IArchiver {
+public class FakeTimeArchiver(ContactsRepo db) : IArchiver {
     DateTime? _started = null;
 
-    public string? archive_file() => status() switch {
-        Status.Complete => "", // TODO
-        _ => null,
-    };
+    public byte[] archive_file() {
+        if (status() is Status.Complete) {
+            var all = db.All();
+            //var bytes = JsonSerializer.SerializeAsync()
+            return all.ToJsonBytes();
+        }
+        return [];
+    }
 
     public double progress() => _started switch {
         DateTime s => ((DateTime.UtcNow - s).TotalSeconds / 15.0) switch {
