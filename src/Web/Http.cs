@@ -14,8 +14,8 @@ public static class Http {
         string html,
         CancellationToken cancel = default
     ) {
-        x.Response.StatusCode = StatusCodes.Status200OK;
         x.Response.ContentType = MediaTypeNames.Text.Html;
+        x.Response.StatusCode = StatusCodes.Status200OK;
         await x.Response.WriteAsync(html, cancel);
     }
 

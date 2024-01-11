@@ -86,12 +86,21 @@ public static partial class Template {
             <td>{{ b.phone }}</td>
             <td>{{ b.email }}</td>
             <td>
-                <a href="/contacts/{{ b.id }}/edit">Edit</a>
-                <a href="/contacts/{{ b.id }}">View</a>
-                <a href="#" hx-delete="/contacts/{{ b.id }}"
-                   hx-swap="outerHTML swap:1s"
-                   hx-confirm="Are you sure you want to delete this contact?"
-                   hx-target="closest tr">Delete</a>
+                <div data-overflow-menu>
+                    <button type="button" aria-haspopup="menu"
+                            aria-controls="contact-menu-{{ b.id }}">
+                        Options
+                    </button>
+                    <div role="menu" hidden id="contact-menu-{{ b.id }}">
+                        <a role="menuitem" href="/contacts/{{ b.id }}/edit">Edit</a>
+                        <a role="menuitem" href="/contacts/{{ b.id }}">View</a>
+                        <a role="menuitem" href="#"
+                           hx-delete="/contacts/{{ b.id }}"
+                           hx-confirm="Are you sure you want to delete this contact?"
+                           hx-swap="outerHTML swap:1s"
+                           hx-target="closest tr">Delete</a>
+                    </div>
+                </div>
             </td>
         </tr>
         """).Join() + ( a.arr.Length == Const.PAGE_SIZE ? $$"""
