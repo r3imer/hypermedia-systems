@@ -49,6 +49,22 @@ public static partial class Template {
                    hx-trigger="keyup delay:300ms changed"/>
             <input type="submit" value="Search" />
             <img style="height: 26px" id="spinner-search" class="htmx-indicator" src="/static/img/tail-spin.svg"/>
+        </form>
+        <form x-data="{ selected: [] }">
+            <template x-if="selected.length > 0">
+                <div class="box info tool-bar flxed top">
+                    <slot x-text="selected.length"></slot>
+                    contacts selected
+                    
+                    <button type="button" class="bad bg color border"
+                            @click="confirm(`Delete ${selected.length} contacts?`) &&
+                            htmx.ajax('DELETE', '/contacts', { source: $root, target: document.body })">
+                        Delete
+                    </button>
+                    <hr aria-orientation="vertical">
+                    <button type="button" @click="selected = []">Cancel</button> 
+                </div>
+            </template>
             <table>
                 <thead>
                     <tr>
@@ -63,12 +79,12 @@ public static partial class Template {
                 <tbody>
                     {{ a.HtmlRows() }}
                 </tbody>
-                <button hx-delete="/contacts"
-                        hx-confirm="Are you sure you want to delete these contacts?"
-                        hx-target="body">
-                    Delete Selected Contacts
-                </button>
             </table>
+            <button hx-delete="/contacts"
+                    hx-confirm="Are you sure you want to delete these contacts?"
+                    hx-target="body">
+                Delete Selected Contacts
+            </button>
         </form>
         <p>
             <a href="/contacts/new">Add Contact</a>
@@ -80,7 +96,7 @@ public static partial class Template {
 
     public static string HtmlRows(this Contacts a) => a.arr.Select(b => $$"""
         <tr>
-            <td><input type="checkbox" name="selected_contact_ids" value="{{ b.id }}"></td>
+            <td><input type="checkbox" name="selected_contact_ids" value="{{ b.id }}" x-model="selected"></td>
             <td>{{ b.first }}</td>
             <td>{{ b.last }}</td>
             <td>{{ b.phone }}</td>

@@ -22,7 +22,7 @@ public static partial class Template {
             <script src="/static/js/htmx-1.9.10.js"></script>
             <script src="/static/js/_hyperscript-0.9.12.js"></script>
             <script src="/static/js/rsjs-menu.js" type="module"></script>
-            <script defer src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js"></script>
+            <script defer src="https://unpkg.com/alpinejs"></script>
         </head>
         <body hx-boost="true">
         <main>
