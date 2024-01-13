@@ -41,6 +41,7 @@ public static partial class Template {
         <form action="/contacts" method="get" class="tool-bar">
             <label for="search">Search Term</label>
             <input id="search" type="search" name="q" value="{{ a.q.q }}"
+                   _="on keydown[altKey and code is 'KeyS'] from the window me.focus()"
                    hx-get="/contacts"
                    hx-target="tbody"
                    hx-select="tbody tr"
