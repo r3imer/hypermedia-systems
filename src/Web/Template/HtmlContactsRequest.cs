@@ -58,8 +58,15 @@ public static partial class Template {
                     contacts selected
                     
                     <button type="button" class="bad bg color border"
-                            @click="confirm(`Delete ${selected.length} contacts?`) &&
-                            htmx.ajax('DELETE', '/contacts', { source: $root, target: document.body })">
+                            @click="Swal.fire({
+                              title: 'Delete these contacts?',
+                              showCancelButton: true,
+                              confirmButtonText: 'Delete'
+                            }).then((result) => { (3)
+                              if (result.isConfirmed) {
+                                htmx.ajax('DELETE', '/contacts', { source: $root, target: document.body })
+                              }
+                           });">
                         Delete
                     </button>
                     <hr aria-orientation="vertical">
