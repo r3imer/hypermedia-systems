@@ -58,6 +58,10 @@ app.MapGroup("/contacts")
     .MapWebEndpoints()
     ;
 
+app.MapGroup("api/v1/contacts")
+    .MapApiEndpointsV1()
+    ;
+
 try {
     app.Run();
 } catch (Exception ex) {
