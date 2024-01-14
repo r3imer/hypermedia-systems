@@ -24,6 +24,7 @@ public static partial class Template {
             <script src="/static/js/rsjs-menu.js" type="module"></script>
             <script defer src="https://unpkg.com/alpinejs"></script>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script defer src="/static/js/my.js"></script>
         </head>
         <body hx-boost="true">
         <main>

@@ -57,16 +57,9 @@ public static partial class Template {
                     <slot x-text="selected.length"></slot>
                     contacts selected
                     
-                    <button type="button" class="bad bg color border"
-                            @click="Swal.fire({
-                              title: 'Delete these contacts?',
-                              showCancelButton: true,
-                              confirmButtonText: 'Delete'
-                            }).then((result) => { (3)
-                              if (result.isConfirmed) {
-                                htmx.ajax('DELETE', '/contacts', { source: $root, target: document.body })
-                              }
-                           });">
+                    <button id="debug" type="button" class="bad bg color border"
+                            hx-delete="/contacts" hx-target="body" hx-trigger="confirmed"
+                            @click="sweetConfirm($el, { title: 'Delete these contacts?', showCancelButton: true, confirmButtonText: 'Delete'})">
                         Delete
                     </button>
                     <hr aria-orientation="vertical">
