@@ -16,7 +16,7 @@ public static partial class Hxml {
     public static string HxmlRows(this Contacts a) => """
 <items xmlns="https://hyperview.org/hyperview">
 """ + a.arr.Select(b => $$"""
-    <item key="{{ b.id }}" style="contact-item"> (3)
+    <item key="{{ b.id }}" style="contact-item">
       <text style="contact-item-label">
         {{ b switch {
         { first: string first } => $"{first} {b.last}",
