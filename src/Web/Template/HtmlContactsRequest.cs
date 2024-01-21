@@ -36,16 +36,6 @@ public static partial class Template {
             """;
     }
 
-
-    public static string HxmlIndex(this Contacts a, IArchiver? b = null) => $$"""
-<form>
-    <text-field name="q" value="" placeholder="Search..." style="search-field" />
-    <list id="contacts-list">
-        {{ a.HxmlRows() }}
-    </list>
-</form>
-""";
-
     public static string HtmlIndex(this Contacts a, IArchiver b) => $$"""
         <p>{{ b.HtmlArchiver() }}</p>
         <form action="/contacts" method="get" class="tool-bar">
@@ -143,23 +133,5 @@ public static partial class Template {
                 </td>
             </tr>
         """ : "");
-
-    public static string HxmlRows(this Contacts a) => """
-<items xmlns="https://hyperview.org/hyperview">
-""" + a.arr.Select(b => $$"""
-    <item key="{{ b.id }}" style="contact-item"> (3)
-      <text style="contact-item-label">
-        {{ b switch {
-        { first: string first } => $"{first} {b.last}",
-        { phone: string phone } => phone,
-        { email: string email } => email,
-        _ => "",
-        }}}
-      </text>
-    </item>
-""").Join() + """
-</items>
-""";
-
 
 }

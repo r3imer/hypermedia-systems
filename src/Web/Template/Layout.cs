@@ -42,26 +42,6 @@ public static partial class Template {
         </html>
         """;
 
-
-    public static string HxmlLayout(this string x, string? header = null) => $$"""
-<doc xmlns="https://hyperview.org/hyperview">
-  <screen>
-    <styles></styles>
-    <body style="body" safe-area="true">
-      <header style="header">
-      {{ header ?? """
-        <text style="header-title">Contact.app</text>
-"""   }}
-      </header>
-
-      <view style="main">
-        {{ x }}
-      </view>
-    </body>
-  </screen>
-</doc>
-""";
-
     private static string ToFlash(string message) => $$"""
         <div class="flash">{{ message }}</div>
         """;
