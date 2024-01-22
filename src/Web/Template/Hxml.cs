@@ -6,7 +6,15 @@ public static partial class Hxml {
 
     public static string HxmlIndex(this Contacts a, IArchiver? b = null) => $$"""
 <form>
-    <text-field name="q" value="" placeholder="Search..." style="search-field" />
+    <text-field name="q" value="" placeholder="Search..." style="search-field">
+      <behavior
+        trigger="change"
+        action="replace-inner"
+        target="contacts-list"
+        href="/mobile/contacts?rows_only=true"
+        verb="get"
+      />
+    </text-field>
     <list id="contacts-list">
         {{ a.HxmlRows() }}
     </list>

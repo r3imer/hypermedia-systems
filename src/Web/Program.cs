@@ -40,6 +40,7 @@ serv.AddHttpLogging(opts => {
         | HttpLoggingFields.ResponseStatusCode
         | HttpLoggingFields.ResponseHeaders
         | HttpLoggingFields.RequestHeaders
+        | HttpLoggingFields.ResponseBody
         ;
 });
 

@@ -3,7 +3,7 @@ using System.Text.Json;
 namespace Reim.Htmx.Web;
 
 public static class Const {
-    public const int PAGE_SIZE = 10;
+    public const int PAGE_SIZE = 20;
 }
 
 public static class ExtDomain {
