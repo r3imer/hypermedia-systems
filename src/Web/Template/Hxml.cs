@@ -43,7 +43,7 @@ public static partial class Hxml {
       key="load-more"
       style="Spinner"
       trigger="visible"
-      href="/mobile/contacts?rows_only=true&page={{ a.q.page + 1 }}"
+      href="/mobile/contacts?rows_only=true&page={{ a.q.page + 1 }}&q={{ a.q.q }}"
       verb="get"
     >
       <spinner />
