@@ -5,20 +5,24 @@ namespace Reim.Htmx.Web.Template;
 public static partial class Hxml {
 
     public static string HxmlIndex(this Contacts a, IArchiver? b = null) => $$"""
-<form>
+<form style="contacts-form">
     <text-field name="q" value="" placeholder="Search..." style="search-field">
-      <behavior
-        trigger="change"
-        action="replace-inner"
-        target="contacts-list"
-        href="/mobile/contacts?rows_only=true"
-        verb="get"
-      />
+      <behavior trigger="change"
+                action="replace-inner"
+                target="contacts-list"
+                href="/mobile/contacts?rows_only=true"
+                verb="get"/>
     </text-field>
-</form>
-    <list id="contacts-list">
+    <list id="contacts-list"
+          trigger="refresh"
+          action="replace-inner"
+          target="contacts-list"
+          href="/mobile/contacts?rows_only=true"
+          verb="get"
+          >
         {{ a.HxmlRows() }}
     </list>
+</form>
 """;
 
     public static string HxmlRows(this Contacts a) => $$"""
@@ -38,13 +42,12 @@ public static partial class Hxml {
   }}
   {{ a.arr.Length switch {
         >0 => $$"""
-    <item
-      action="replace"
-      key="load-more"
-      style="Spinner"
-      trigger="visible"
-      href="/mobile/contacts?rows_only=true&page={{ a.q.page + 1 }}&q={{ a.q.q }}"
-      verb="get"
+    <item key="load-more"
+          style="Spinner"
+          action="replace"
+          trigger="visible"
+          href="/mobile/contacts?rows_only=true&page={{ a.q.page + 1 }}&q={{ a.q.q }}"
+          verb="get"
     >
       <spinner />
     </item>
