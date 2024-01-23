@@ -6,18 +6,18 @@ public static partial class Hxml {
 <doc xmlns="https://hyperview.org/hyperview">
   <screen>
     <styles>
-      <style id="header" flexDirection="row" justifyContent="space-between" alignItems="center" borderBottomColor="#ccc" borderBottomWidth="1" paddingLeft="24" paddingRight="24" paddingVertical="16" backgroundColor="white" />
+<style id="header" flexDirection="row" justifyContent="space-between" alignItems="center" borderBottomColor="#ccc" borderBottomWidth="1" paddingLeft="24" paddingRight="24" paddingVertical="16" backgroundColor="white" />
       <style id="header-title" fontSize="16" color="black" fontWeight="500" />
       <style id="header-button" fontSize="16" color="blue" />
 
-      <style id="body" flex="1" />
-      <style id="main" flex="1" backgroundColor="#eee" />
+      <style id="body" flex="1"></style>
+      <style id="main" flex="1" backgroundColor="#eee"></style>
 
       <style id="search-field" paddingHorizontal="24" paddingVertical="8" borderBottomWidth="1" borderBottomColor="#ddd" backgroundColor="#eee" />
 
       <style id="contact-item" borderBottomColor="#ddd" borderBottomWidth="1" paddingLeft="24" paddingRight="24" paddingVertical="16" backgroundColor="white" />
       <style id="contact-item-label" fontWeight="500" />
-      <style id="load-more-item" paddingVertical="16" />
+      <style id="Spinner" paddingVertical="16" />
 
       <style id="contact-name" fontSize="24" textAlign="center" marginVertical="32" fontWeight="500" />
       <style id="contact-section" margin="8" backgroundColor="white" borderRadius="8" padding="8" marginHorizontal="24" />

@@ -15,15 +15,15 @@ public static partial class Hxml {
         verb="get"
       />
     </text-field>
+</form>
     <list id="contacts-list">
         {{ a.HxmlRows() }}
     </list>
-</form>
 """;
 
-    public static string HxmlRows(this Contacts a) => """
+    public static string HxmlRows(this Contacts a) => $$"""
 <items xmlns="https://hyperview.org/hyperview">
-""" + a.arr.Select(b => $$"""
+  {{ a.arr.Select(b => $$"""
     <item key="{{ b.id }}" style="contact-item">
       <text style="contact-item-label">
         {{ b switch {
@@ -34,7 +34,23 @@ public static partial class Hxml {
         }}}
       </text>
     </item>
-""").Join() + """
+""").Join()
+  }}
+  {{ a.arr.Length switch {
+        >0 => $$"""
+    <item
+      action="replace"
+      key="load-more"
+      style="Spinner"
+      trigger="visible"
+      href="/mobile/contacts?rows_only=true&page={{ a.q.page + 1 }}"
+      verb="get"
+    >
+      <spinner />
+    </item>
+""",
+        _ => "",
+  }}}
 </items>
 """;
 

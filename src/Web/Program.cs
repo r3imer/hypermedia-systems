@@ -54,7 +54,6 @@ app.UseAntiforgery();
 
 app.MapGet("/", () => Results.Redirect("/contacts"));
 
-
 app.MapGroup("/mobile/contacts")
     .DisableAntiforgery()
     .MapMobileEndpoints()
