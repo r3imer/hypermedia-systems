@@ -14,5 +14,8 @@ public static partial class Template {
     public static IResult AsHxml(this Hxml x) {
         return Results.Content(x.value, "application/vnd.hyperview+xml");
     }
+    public static IResult AsHxml(this string x) {
+        return Results.Content(x, "application/vnd.hyperview+xml");
+    }
 
 }

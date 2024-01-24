@@ -1,4 +1,5 @@
 using Reim.Htmx.Archiver;
+using Reim.Std.Domain;
 
 namespace Reim.Htmx.Web.Template;
 
@@ -65,6 +66,10 @@ public static partial class HxmlTemplates {
           <behavior trigger="press" action="back" />
           Back
         </text>
+        <text style="header-button">
+          <behavior trigger="press" action="reload" href="/mobile/contacts/{{contact.id}}/edit" />
+          Edit
+        </text>
         """,
         content: $$"""
         <view style="details">
@@ -81,5 +86,71 @@ public static partial class HxmlTemplates {
           </view>
         </view>
         """);
+
+    public static HxmlLayout HxmlEdit(this ContactDto contact, Errors? errors, bool saved) => new(
+        header: $$"""
+        <text style="header-button">
+          <behavior trigger="press" action="back" href="#" />
+          Back
+        </text>
+        """,
+        content: $$"""
+        <form>
+          <view id="form-fields">
+            {{ contact.HxmlFields(errors, saved) }}
+          </view>
+
+          <view style="button">
+            <behavior
+              trigger="press"
+              action="replace-inner"
+              target="form-fields"
+              href="/mobile/contacts/{{contact.id}}/edit"
+              verb="post"
+            />
+            <text style="button-label">Save</text>
+          </view>
+          <view style="button">
+            <behavior
+              trigger="press"
+              action="reload"
+              href="/mobile/contacts/{{contact.id}}"
+            />
+            <text style="button-label">Cancel</text>
+          </view>
+        </form>
+        """);
+
+    public static string HxmlFields(this ContactDto contact, Errors? errors, bool saved) => $$"""
+<view style="edit-group" xmlns="https://hyperview.org/hyperview">
+  {{( saved ? $$"""
+    <behavior
+      trigger="load"
+      action="reload"
+      href="/mobile/contacts/{{contact.id}}"
+    />
+""" : "" )}}
+  <view style="edit-field">
+    <text-field name="first_name" placeholder="First name" value="{{ contact.first_name }}" />
+    <text style="edit-field-error">{{ errors?["first_name"] }}</text>
+  </view>
+
+  <view style="edit-field">
+    <text-field name="last_name" placeholder="Last name" value="{{ contact.last_name }}" />
+    <text style="edit-field-error">{{ errors?["last_name"] }}</text>
+  </view>
+
+  <view style="edit-field">
+    <text-field name="email" placeholder="Email" value="{{ contact.email }}" />
+    <text style="edit-field-error">{{ errors?["email"] }}</text>
+  </view>
+
+  <view style="edit-field">
+    <text-field name="phone" placeholder="Phone" value="{{ contact.phone }}" />
+    <text style="edit-field-error">{{ errors?["phone"] }}</text>
+  </view>
+
+</view>
+""";
 
 }

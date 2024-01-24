@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Reim.Htmx.Archiver;
 using Reim.Htmx.Web.Template;
 using Reim.Http;
+using Reim.Std.Domain;
 
 namespace Reim.Htmx.Web;
 
@@ -71,37 +72,34 @@ public static class EndpointsMobile {
         x.MapGet("/{id}",
         (int id, ContactsRepo db) => {
             var contact = db.Load(id);
+            if (contact is null) {
+                return Results.NotFound();
+            }
             return contact?.ToDto().HxmlShow().HxmlLayout().AsHxml();
         });
 
-        //x.MapGet("/{id}/edit",
-        //(int id, ContactsRepo db) => {
-        //    var contact = db.Load(id);
-        //    if (contact is null) {
-        //        Flashes.Add($"Contact '{id}' not found");
-        //        return Results.Redirect("/contacts");
-        //    }
-        //    return contact.ToDto().HtmlEdit(null).HtmlLayout().AsHtml();
-        //});
+        x.MapGet("/{id}/edit",
+        (int id, ContactsRepo db) => {
+            var contact = db.Load(id);
+            if (contact is null) {
+                return Results.NotFound();
+            }
+            return contact?.ToDto().HxmlEdit(null, false).HxmlLayout().AsHxml();
+        });
 
-        //x.MapPost("/{id}/edit",
-        //(int id, [FromForm] ContactForm contact, ContactsRepo db) => {
-        //    var old = db.Load(id);
-        //    if (old is null) {
-        //        Flashes.Add($"Contact '{id}' not found");
-        //        return Results.Redirect("/contacts");
-        //    }
-        //    var c = db.Update(contact, id);
-        //    return c.Match(
-        //        ok => {
-        //            Flashes.Add("Updated Contact!");
-        //            return Results.Redirect($"/contacts/{id}");
-        //        },
-        //        err => {
-        //            return contact.ToDto(id).HtmlEdit(err).HtmlLayout().AsHtml();
-        //        }
-        //    );
-        //});
+        x.MapPost("/{id}/edit",
+        (int id, [FromForm] ContactForm contact, ContactsRepo db) => {
+            var old = db.Load(id);
+            if (old is null) {
+                return Results.NotFound();
+            }
+            var c = db.Update(contact, id);
+            var (err, saved) = c.Match<(Errors?, bool)>(
+                ok => (null, true),
+                err => (err, false)
+            );
+            return contact.ToDto(id).HxmlFields(err, saved).AsHxml();
+        });
 
         //x.MapGet("/{id}/email",
         //(ContactsRepo db, int id, string? email = null) => {
