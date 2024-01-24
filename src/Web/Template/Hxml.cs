@@ -7,6 +7,14 @@ public static partial class HxmlTemplates {
 
     public static HxmlLayout HxmlIndex(this Contacts a, IArchiver? b = null) => new($$"""
 <form style="contacts-form">
+    <behavior
+      trigger="on-event"
+      event-name="contact-updated"
+      action="replace-inner"
+      target="contacts-list"
+      href="/mobile/contacts?rows_only=true"
+      verb="get"
+    />
     <text-field name="q" value="" placeholder="Search..." style="search-field">
       <behavior trigger="change"
                 action="replace-inner"
@@ -48,7 +56,7 @@ public static partial class HxmlTemplates {
           style="Spinner"
           action="replace"
           trigger="visible"
-          href="/mobile/contacts?rows_only=true&page={{ a.q.page + 1 }}&q={{ a.q.q }}"
+          href="/mobile/contacts?rows_only=true&page={{ a.q.page + 1 }}"
           verb="get"
     >
       <spinner />
@@ -124,6 +132,11 @@ public static partial class HxmlTemplates {
     public static string HxmlFields(this ContactDto contact, Errors? errors, bool saved) => $$"""
 <view style="edit-group" xmlns="https://hyperview.org/hyperview">
   {{( saved ? $$"""
+    <behavior
+      trigger="load"
+      action="dispatch-event"
+      event-name="contact-updated"
+    />
     <behavior
       trigger="load"
       action="reload"
