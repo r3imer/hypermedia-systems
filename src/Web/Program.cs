@@ -14,6 +14,15 @@ bldr.Host.UseNLog();
 
 var serv = bldr.Services;
 
+var AllowOrigins = "AllowOrigins";
+serv.AddCors(opts => {
+    opts.AddPolicy(name: AllowOrigins, policy => {
+        policy.AllowAnyOrigin();
+        policy.AllowAnyMethod();
+        policy.AllowAnyHeader();
+    });
+});
+
 serv.AddAntiforgery();
 
 //serv.AddSingleton<DB>();
@@ -51,10 +60,12 @@ var log = app.Services.GetService<ILogger<Program>>()!;
 app.UseStaticFiles();
 app.UseHttpLogging();
 app.UseAntiforgery();
+app.UseCors();
 
 app.MapGet("/", () => Results.Redirect("/contacts"));
 
 app.MapGroup("/mobile/contacts")
+    .RequireCors(AllowOrigins)
     .DisableAntiforgery()
     .MapMobileEndpoints()
     ;
