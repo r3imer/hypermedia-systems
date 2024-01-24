@@ -68,15 +68,11 @@ public static class EndpointsMobile {
         //    );
         //});
 
-        //x.MapGet("/{id}",
-        //(int id, ContactsRepo db) => {
-        //    var contact = db.Load(id);
-        //    if (contact is null) {
-        //        Flashes.Add($"Contact '{id}' not found");
-        //        return Results.Redirect("/contacts");
-        //    }
-        //    return contact.ToDto().HtmlShow().HtmlLayout().AsHtml();
-        //});
+        x.MapGet("/{id}",
+        (int id, ContactsRepo db) => {
+            var contact = db.Load(id);
+            return contact?.ToDto().HxmlShow().HxmlLayout().AsHxml();
+        });
 
         //x.MapGet("/{id}/edit",
         //(int id, ContactsRepo db) => {

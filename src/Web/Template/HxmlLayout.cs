@@ -1,8 +1,11 @@
 namespace Reim.Htmx.Web.Template;
 
-public static partial class Hxml {
+public record Hxml(string value);
+public record HxmlLayout(string content, string? header = null);
 
-    public static string HxmlLayout(this string x, string? header = null) => $$"""
+public static partial class HxmlTemplates {
+
+    public static Hxml HxmlLayout(this HxmlLayout x) => new($$"""
 <doc xmlns="https://hyperview.org/hyperview">
   <screen>
     <styles>
@@ -92,16 +95,16 @@ public static partial class Hxml {
     </styles>
     <body style="body">
       <header style="header">
-      {{ header ?? """
+      {{ x.header ?? """
         <text style="header-title">Contacts</text>
 """   }}
       </header>
       <view style="main">
-        {{ x }}
+        {{ x.content }}
       </view>
     </body>
   </screen>
 </doc>
-""";
+""");
 
 }

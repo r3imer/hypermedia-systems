@@ -2,9 +2,9 @@ using Reim.Htmx.Archiver;
 
 namespace Reim.Htmx.Web.Template;
 
-public static partial class Hxml {
+public static partial class HxmlTemplates {
 
-    public static string HxmlIndex(this Contacts a, IArchiver? b = null) => $$"""
+    public static HxmlLayout HxmlIndex(this Contacts a, IArchiver? b = null) => new($$"""
 <form style="contacts-form">
     <text-field name="q" value="" placeholder="Search..." style="search-field">
       <behavior trigger="change"
@@ -23,15 +23,16 @@ public static partial class Hxml {
         {{ a.HxmlRows() }}
     </list>
 </form>
-""";
+""");
 
-    public static string HxmlRows(this Contacts a) => $$"""
+    public static Hxml HxmlRows(this Contacts a) => new($$"""
 <items xmlns="https://hyperview.org/hyperview">
-  {{ a.arr.Select(b => $$"""
-    <item key="{{ b.id }}" style="contact-item">
+  {{ a.arr.Select(contact => $$"""
+    <item key="{{ contact.id }}" style="contact-item">
+      <behavior trigger="press" action="push" href="/mobile/contacts/{{ contact.id }}" />
       <text style="contact-item-label">
-        {{ b switch {
-        { first: string first } => $"{first} {b.last}",
+        {{ contact switch {
+        { first: string first } => $"{first} {contact.last}",
         { phone: string phone } => phone,
         { email: string email } => email,
         _ => "",
@@ -55,6 +56,30 @@ public static partial class Hxml {
         _ => "",
   }}}
 </items>
-""";
+""");
+
+
+    public static HxmlLayout HxmlShow(this ContactDto contact) => new(
+        header: $$"""
+        <text style="header-button">
+          <behavior trigger="press" action="back" />
+          Back
+        </text>
+        """,
+        content: $$"""
+        <view style="details">
+          <text style="contact-name">{{ contact.first_name }} {{ contact.last_name }}</text>
+
+          <view style="contact-section">
+            <text style="contact-section-label">Phone</text>
+            <text style="contact-section-info">{{contact.phone}}</text>
+          </view>
+
+          <view style="contact-section">
+            <text style="contact-section-label">Email</text>
+            <text style="contact-section-info">{{contact.email}}</text>
+          </view>
+        </view>
+        """);
 
 }
