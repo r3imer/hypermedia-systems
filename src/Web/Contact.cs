@@ -57,6 +57,7 @@ public class ContactsRepo(Contact[] list) {
 
     private readonly List<Contact> _db = [.. list];
     private int _counter = list.Length;
+    private bool _success = false;
 
     public Contacts Query(QueryContacts query) {
         Contact[] c1 = ((query.q is null) switch {
@@ -90,11 +91,16 @@ public class ContactsRepo(Contact[] list) {
         => _db.Where(x => x.id == id).FirstOrDefault();
 
     public bool Delete(int id) {
+        if (!_success) {
+            _success = true;
+            return false;
+        }
         var index = _db.FindIndex(x => x.id == id);
         if (index == -1) {
             return false;
         }
         _db.RemoveAt(index);
+        _success = false;
         return true;
     }
 
