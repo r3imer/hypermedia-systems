@@ -50,24 +50,20 @@ public static class EndpointsMobile {
         //    return $"({total} total Contacts)".AsHtml();
         //});
 
-        //x.MapGet("/new",
-        //() => {
-        //    return new ContactDto().HtmlNew(null).HtmlLayout().AsHtml();
-        //});
+        x.MapGet("/new",
+        () => {
+            return new ContactDto().HxmlNew(null, false).HxmlLayout().AsHxml();
+        });
 
-        //x.MapPost("/new",
-        //([FromForm] ContactForm contact, ContactsRepo db) => {
-        //    var c = db.Create(contact);
-        //    return c.Match(
-        //        ok => {
-        //            Flashes.Add("Created New Contact!");
-        //            return Results.Redirect("/contacts");
-        //        },
-        //        err => {
-        //            return contact.ToDto(null).HtmlNew(err).HtmlLayout().AsHtml();
-        //        }
-        //    );
-        //});
+        x.MapPost("/new",
+        ([FromForm] ContactForm contact, ContactsRepo db) => {
+            var c = db.Create(contact);
+            return c.Match(
+                ok => ok.ToDto().HxmlFields(null, true),
+                err => contact.ToDto(null).HxmlFields(err, false)
+            ).AsHxml();
+
+        });
 
         x.MapGet("/{id}",
         (int id, ContactsRepo db) => {

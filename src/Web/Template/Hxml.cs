@@ -5,7 +5,15 @@ namespace Reim.Htmx.Web.Template;
 
 public static partial class HxmlTemplates {
 
-    public static HxmlLayout HxmlIndex(this Contacts a, IArchiver? b = null) => new($$"""
+    public static HxmlLayout HxmlIndex(this Contacts a, IArchiver? b = null) => new(
+header: """
+<text style="header-title">Contacts</text>
+<text style="header-button">
+  <behavior trigger="press" action="new" href="/mobile/contacts/new" />
+  Add
+</text>
+""",
+content: $$"""
 <form style="contacts-form">
     <behavior
       trigger="on-event"
@@ -48,7 +56,7 @@ public static partial class HxmlTemplates {
         }}}
       </text>
     </item>
-""").Join()
+""").ToArray().Join()
   }}
   {{ a.arr.Length switch {
         >0 => $$"""
@@ -93,6 +101,32 @@ public static partial class HxmlTemplates {
             <text style="contact-section-info">{{contact.email}}</text>
           </view>
         </view>
+        """);
+
+    public static HxmlLayout HxmlNew(this ContactDto contact, Errors? errors, bool saved) => new(
+        header: $$"""
+        <text style="header-button">
+          <behavior trigger="press" action="close"/>
+          Close
+        </text>
+        """,
+        content: $$"""
+        <form>
+          <view id="form-fields">
+            {{ contact.HxmlFields(errors, saved) }}
+          </view>
+
+          <view style="button">
+            <behavior
+              trigger="press"
+              action="replace-inner"
+              target="form-fields"
+              href="/mobile/contacts/new"
+              verb="post"
+            />
+            <text style="button-label">Add Contact</text>
+          </view>
+        </form>
         """);
 
     public static HxmlLayout HxmlEdit(this ContactDto contact, Errors? errors, bool saved) => new(
