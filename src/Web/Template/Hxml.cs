@@ -128,12 +128,23 @@ public static partial class HxmlTemplates {
           </view>
           <view style="button">
             <behavior
+              xmlns:alert="https://hyperview.org/hyperview-alert"
               trigger="press"
-              action="append"
-              target="form-fields"
-              href="/mobile/contacts/{{contact.id}}/delete"
-              verb="post"
-            />
+              action="alert"
+              alert:title="Confirm delete"
+              alert:message="Are you sure you want to delete {{ contact.first_name }}?"
+            >
+                <alert:option alert:label="Confirm">
+                    <behavior
+                      trigger="press"
+                      action="append"
+                      target="form-fields"
+                      href="/mobile/contacts/{{contact.id}}/delete"
+                      verb="post"
+                    />
+                </alert:option>
+                <alert:option alert:label="Cancel" />
+            </behavior>
             <text style="button-label button-label-delete">Delete Contact</text>
           </view>
         </form>
