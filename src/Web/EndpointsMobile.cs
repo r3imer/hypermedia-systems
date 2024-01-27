@@ -24,7 +24,7 @@ public static class EndpointsMobile {
         ) => {
             var query = new QueryContacts(q, page);
 
-            var c = db.Query(query);
+            Contacts c = db.Query(query);
 
             return rows_only switch {
                 "true" => c.HxmlRows().AsHxml(),

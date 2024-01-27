@@ -60,10 +60,10 @@ public class ContactsRepo(Contact[] list) {
     private bool _success = false;
 
     public Contacts Query(QueryContacts query) {
-        Contact[] c1 = ((query.q is null) switch {
+        Contact[] c1 = (query.q is null) switch {
             false => Search(query.q),
             true => All(),
-        });
+        };
 
         var c2 = c1
             .Skip(Const.PAGE_SIZE * query.page)

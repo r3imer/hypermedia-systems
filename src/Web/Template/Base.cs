@@ -9,13 +9,13 @@ public static partial class Template {
     //    return TypedResults.Content(x, "text/html; charset=utf-8");
     //}
     public static IResult AsHtml(this string? x) {
-        return Results.Content(x, "text/html; charset=utf-8");
+        return Results.Content(x, "text/html; charset=utf-8", System.Text.Encoding.UTF8, 200);
     }
     public static IResult AsHxml(this Hxml x) {
-        return Results.Content(x.value, "application/vnd.hyperview+xml");
+        return Results.Content(x.value, "application/vnd.hyperview+xml", System.Text.Encoding.UTF8, 200);
     }
     public static IResult AsHxml(this string x) {
-        return Results.Content(x, "application/vnd.hyperview+xml");
+        return Results.Content(x, "application/vnd.hyperview+xml", System.Text.Encoding.UTF8, 200);
     }
 
 }

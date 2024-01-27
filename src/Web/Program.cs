@@ -45,7 +45,7 @@ serv.AddHttpLogging(opts => {
     opts.RequestHeaders.Add("HX-Trigger-Name");
     opts.RequestHeaders.Add("HX-Trigger");
     opts.LoggingFields =
-        HttpLoggingFields.Duration 
+        HttpLoggingFields.Duration
         | HttpLoggingFields.ResponseStatusCode
         | HttpLoggingFields.ResponseHeaders
         | HttpLoggingFields.RequestHeaders
@@ -55,6 +55,13 @@ serv.AddHttpLogging(opts => {
 
 var app = bldr.Build();
 var log = app.Services.GetService<ILogger<Program>>()!;
+
+//app.Use(async (ctxt, next) => {
+//    await next(ctxt);
+//    if (ctxt.Response.StatusCode is 204) {
+//        log.LogInformation("---204---");
+//    }
+//});
 
 //app.UseMiddleware<CatchExceptions>();
 app.UseStaticFiles();
