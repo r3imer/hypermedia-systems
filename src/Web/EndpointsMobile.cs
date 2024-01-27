@@ -107,21 +107,14 @@ public static class EndpointsMobile {
         //    return r.AsHtml();
         //});
 
-        //x.MapDelete("/{id}",
-        //async (
-        //    [FromHeader(Name = "HX-Trigger")] string? trigger,
-        //    int id,
-        //    ContactsRepo db,
-        //    HttpContext ctxt
-        //) => {
-        //    var found = db.Delete(id);
-        //    if (found && trigger == "delete-btn") {
-        //        Flashes.Add("Delete Contact!");
-        //        ctxt.Response303("/contacts");
-        //    } else {
-        //        await ctxt.Response200Html("");
-        //    }
-        //});
+        x.MapPost("/{id}/delete",
+        (
+            int id,
+            ContactsRepo db
+        ) => {
+            var success = db.Delete(id);
+            return success.HxmlDeleted().AsHxml();
+        });
 
         //x.MapGet("/archive",
         //(IArchiver a) => {

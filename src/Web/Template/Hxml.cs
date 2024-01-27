@@ -126,6 +126,16 @@ public static partial class HxmlTemplates {
             />
             <text style="button-label">Cancel</text>
           </view>
+          <view style="button">
+            <behavior
+              trigger="press"
+              action="append"
+              target="form-fields"
+              href="/mobile/contacts/{{contact.id}}/delete"
+              verb="post"
+            />
+            <text style="button-label button-label-delete">Delete Contact</text>
+          </view>
         </form>
         """);
 
@@ -166,4 +176,12 @@ public static partial class HxmlTemplates {
 </view>
 """;
 
+    public static Hxml HxmlDeleted(this bool success) => new($$"""
+<view xmlns="https://hyperview.org/hyperview">
+{{(success ? """
+  <behavior trigger="load" action="dispatch-event" event-name="contact-updated" />
+  <behavior trigger="load" action="back" />
+""" : "")}}
+</view>
+""");
 }
