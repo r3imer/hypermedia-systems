@@ -8,6 +8,20 @@ public static class Flashes {
         return arr;
     }
     public static void Add(string flash) { s_list.Add(flash); }
+
+    public static string Html() => s_list.Select(x => $$"""
+        <div class="flash">{{ x }}</div>
+        """).Join();
+
+    public static string Hxml() => s_list.Select(x => $$"""
+  <behavior 
+    xmlns:message="https://hypermedia.systems/hyperview/message"
+    trigger="load"
+    action="show-message"
+    message:text="{{ x }}"
+  />
+""").Join();
+
 }
 
 public static partial class Template {
@@ -32,7 +46,7 @@ public static partial class Template {
                     <sub-title>A Demo Contacts Application</sub-title>
                 </h1>
             </header>
-            {{ Flashes.Get().Select(ToFlash).Join() }}
+            {{ Flashes.Html() }}
             {{ x }}
             <br>
             <br>
@@ -42,8 +56,5 @@ public static partial class Template {
         </html>
         """;
 
-    private static string ToFlash(string message) => $$"""
-        <div class="flash">{{ message }}</div>
-        """;
 
 }

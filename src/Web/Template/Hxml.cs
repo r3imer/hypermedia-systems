@@ -199,6 +199,7 @@ content: $$"""
     public static string HxmlFields(this ContactDto contact, Errors? errors, bool saved) => $$"""
 <view style="edit-group" xmlns="https://hyperview.org/hyperview">
   {{( saved ? $$"""
+    {{ Flashes.Hxml() }}
     <behavior
       trigger="load"
       action="dispatch-event"
@@ -235,10 +236,15 @@ content: $$"""
 
     public static Hxml HxmlDeleted(this bool success) => new($$"""
 <view xmlns="https://hyperview.org/hyperview">
-{{(success ? """
+{{(success ? $$"""
+  {{ Flashes.Hxml() }}
   <behavior trigger="load" action="dispatch-event" event-name="contact-updated" />
   <behavior trigger="load" action="back" />
 """ : "")}}
 </view>
 """);
+
+    public static string HxmlMessages() => $$"""
+
+""";
 }

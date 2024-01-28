@@ -59,10 +59,12 @@ public static class EndpointsMobile {
         ([FromForm] ContactForm contact, ContactsRepo db) => {
             var c = db.Create(contact);
             return c.Match(
-                ok => ok.ToDto().HxmlFields(null, true),
+                ok => {
+                    Flashes.Add("Created New Contact!");
+                    return ok.ToDto().HxmlFields(null, true);
+                },
                 err => contact.ToDto(null).HxmlFields(err, false)
             ).AsHxml();
-
         });
 
         x.MapGet("/{id}",
@@ -91,7 +93,10 @@ public static class EndpointsMobile {
             }
             var c = db.Update(contact, id);
             var (err, saved) = c.Match<(Errors?, bool)>(
-                ok => (null, true),
+                ok => {
+                    Flashes.Add("Updated Contact!");
+                    return (null, true);
+                },
                 err => (err, false)
             );
             return contact.ToDto(id).HxmlFields(err, saved).AsHxml();
@@ -109,6 +114,9 @@ public static class EndpointsMobile {
             ContactsRepo db
         ) => {
             var success = db.Delete(id);
+            if (success) {
+                Flashes.Add("Deleted Contacts!");
+            }
             return success.HxmlDeleted().AsHxml();
         });
 
