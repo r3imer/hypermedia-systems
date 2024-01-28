@@ -92,11 +92,23 @@ content: $$"""
           <text style="contact-name">{{ contact.first_name }} {{ contact.last_name }}</text>
 
           <view style="contact-section">
+            <behavior
+              xmlns:comms="https://hypermedia.systems/hyperview/communications"
+              trigger="press"
+              action="open-phone"
+              comms:phone-number="{{contact.phone}}"
+            />
             <text style="contact-section-label">Phone</text>
             <text style="contact-section-info">{{contact.phone}}</text>
           </view>
 
           <view style="contact-section">
+            <behavior
+              xmlns:comms="https://hypermedia.systems/hyperview/communications"
+              trigger="press"
+              action="open-email"
+              comms:email-address="{{contact.email}}"
+            />
             <text style="contact-section-label">Email</text>
             <text style="contact-section-info">{{contact.email}}</text>
           </view>
